@@ -1,0 +1,11 @@
+.fill-remaining-space {
+  /* This fills the remaining space, by using flexbox.
+     Every toolbar row uses a flexbox row layout. */
+  flex: 1 1 auto;
+}
+
+.toolbar-buttons button,
+.toolbar-buttons a {
+  margin-right: 4px;
+  margin-left: 4px;
+}
