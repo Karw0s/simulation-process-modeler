@@ -1,26 +1,43 @@
-import { AfterContentInit, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, ViewChild } from '@angular/core';
-import * as BpmnJS from 'bpmn-js/dist/bpmn-modeler.production.min.js';
+import { AfterContentInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { importDiagram } from './rx';
 import { HttpClient } from '@angular/common/http';
+import { InjectionNames, Modeler, OriginalPaletteProvider, OriginalPropertiesProvider, PropertiesPanelModule } from '../providers/bpmn-js';
+import { CustomPropsProvider } from '../providers/CustomPropsProvider';
+import { CustomPaletteProvider } from '../providers/CustomPaletteProvider';
 
 @Component({
   selector: 'app-modeler',
   templateUrl: './modeler.component.html',
-  styleUrls: ['./modeler.component.css']
+  styleUrls: ['./modeler.component.css'],
 })
-export class ModelerComponent implements OnDestroy, AfterContentInit {
-  modeler: any;
-  private bpmnJS: BpmnJS;
-
-  @ViewChild('someInput', {static: true}) private el: ElementRef;
+export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
+  private bpmnJS: any;
 
   @Output() private importDone: EventEmitter<any> = new EventEmitter();
   @Input() private url: string;
 
   constructor(private http: HttpClient) {
-    this.bpmnJS = new BpmnJS();
+  }
+
+  ngOnInit(): void {
+    this.bpmnJS = new Modeler({
+      container: '#diagramPanel',
+      additionalModules: [
+        PropertiesPanelModule,
+
+        {[InjectionNames.bpmnPropertiesProvider]: ['type', OriginalPropertiesProvider.propertiesProvider[1]]},
+        {[InjectionNames.propertiesProvider]: ['type', CustomPropsProvider]},
+
+        // Re-use original palette, see CustomPaletteProvider
+        {[InjectionNames.originalPaletteProvider]: ['type', OriginalPaletteProvider]},
+        {[InjectionNames.paletteProvider]: ['type', CustomPaletteProvider]},
+      ],
+      propertiesPanel: {
+        parent: '#propertiesPanel'
+      },
+    });
 
     this.bpmnJS.on('import.done', ({error}) => {
       if (!error) {
@@ -30,7 +47,6 @@ export class ModelerComponent implements OnDestroy, AfterContentInit {
   }
 
   ngAfterContentInit(): void {
-    this.bpmnJS.attachTo(this.el.nativeElement);
     this.loadUrl('https://cdn.staticaly.com/gh/bpmn-io/bpmn-js-examples/dfceecba/starter/diagram.bpmn');
   }
 

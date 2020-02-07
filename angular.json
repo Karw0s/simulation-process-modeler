@@ -25,6 +25,9 @@
             ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+              "./node_modules/bpmn-js-properties-panel/styles/properties.less",
+              "./node_modules/bpmn-js/dist/assets/bpmn-font/css/bpmn.css",
+              "./node_modules/bpmn-js/dist/assets/diagram-js.css",
               "src/styles.css"
             ],
             "scripts": []
