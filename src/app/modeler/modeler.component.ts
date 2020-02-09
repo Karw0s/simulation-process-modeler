@@ -6,6 +6,9 @@ import { HttpClient } from '@angular/common/http';
 import { InjectionNames, Modeler, OriginalPaletteProvider, OriginalPropertiesProvider, PropertiesPanelModule } from '../providers/bpmn-js';
 import { CustomPropsProvider } from '../providers/CustomPropsProvider';
 import { CustomPaletteProvider } from '../providers/CustomPaletteProvider';
+import customPaletteProvider from '../custom-elements/palette';
+import nyanDrawModule from '../custom-elements/nyan/draw';
+import nyanPaletteModule from '../custom-elements/nyan/palette';
 
 @Component({
   selector: 'app-modeler',
@@ -23,21 +26,26 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
 
   ngOnInit(): void {
     this.bpmnJS = new Modeler({
-      container: '#diagramPanel',
-      additionalModules: [
-        PropertiesPanelModule,
+        container: '#diagramPanel',
+        additionalModules: [
+          PropertiesPanelModule,
+          //
+          {[InjectionNames.bpmnPropertiesProvider]: ['type', OriginalPropertiesProvider.propertiesProvider[1]]},
+          {[InjectionNames.propertiesProvider]: ['type', CustomPropsProvider]},
 
-        {[InjectionNames.bpmnPropertiesProvider]: ['type', OriginalPropertiesProvider.propertiesProvider[1]]},
-        {[InjectionNames.propertiesProvider]: ['type', CustomPropsProvider]},
-
-        // Re-use original palette, see CustomPaletteProvider
-        {[InjectionNames.originalPaletteProvider]: ['type', OriginalPaletteProvider]},
-        {[InjectionNames.paletteProvider]: ['type', CustomPaletteProvider]},
-      ],
-      propertiesPanel: {
-        parent: '#propertiesPanel'
-      },
-    });
+          customPaletteProvider,
+          nyanDrawModule,
+          nyanPaletteModule
+        ],
+        propertiesPanel: {
+          parent: '#propertiesPanel'
+        },
+        keyboard: {
+          bindTo: document.body
+        }
+      }
+    )
+    ;
 
     this.bpmnJS.on('import.done', ({error}) => {
       if (!error) {
