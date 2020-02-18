@@ -83,7 +83,7 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
     this.bpmnJS.attachTo(this.el.nativeElement);
     this.bpmnJS.get('propertiesPanel').attachTo(this.pp.nativeElement);
 
-    this.route.params.subscribe((params) => {
+    this.route.paramMap.subscribe((params) => {
       this.id = +params.get('id');
 
       this.editMode = params.get('id') != null;
