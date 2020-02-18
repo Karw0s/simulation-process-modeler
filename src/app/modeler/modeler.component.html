@@ -1,4 +1,6 @@
 <div fxLayout="row" class="diagram-parent">
   <div #someInput id="diagramPanel"  fxFlex="85" class="diagram-container"></div>
-  <div id="propertiesPanel"  fxFlex="15" class="properties-panel"></div>
+  <div #propertiesPanel id="propertiesPanel"  fxFlex="15" class="properties-panel"></div>
 </div>
+<button mat-button (click)="save()">SAVE</button>
+<a mat-button routerLink="/modeler/new">new</a>

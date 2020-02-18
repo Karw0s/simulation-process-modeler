@@ -34,3 +34,35 @@ export const importDiagram = (bpmnJS) => <Object>(source: Observable<string>) =>
       }
     });
   });
+
+
+export const saveDiagram = (bpmnJS) => <Object>(source: Observable<string>) =>
+  new Observable<string>(observer => {
+
+    const subscription = source.subscribe({
+      next(xml: string) {
+
+        // canceling the subscription as we are interested
+        // in the first diagram to display only
+        subscription.unsubscribe();
+
+        bpmnJS.importXML(xml, (err, warnings) => {
+
+          if (err) {
+            observer.error(err);
+          } else {
+            observer.next(warnings);
+          }
+
+          observer.complete();
+        });
+      },
+      error(e) {
+        console.log('ERROR');
+        observer.error(e);
+      },
+      complete() {
+        observer.complete();
+      }
+    });
+  });
