@@ -1,26 +1,75 @@
-import { AfterContentInit, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, ViewChild } from '@angular/core';
-import * as BpmnJS from 'bpmn-js/dist/bpmn-modeler.production.min.js';
+import { AfterContentInit, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { importDiagram } from './rx';
 import { HttpClient } from '@angular/common/http';
+import { InjectionNames, Modeler, OriginalPropertiesProvider, PropertiesPanelModule } from '../providers/bpmn-js';
+import { CustomPropsProvider } from '../providers/CustomPropsProvider';
+import { saveAs } from 'file-saver';
+import customPaletteProvider from '../custom-elements/palette';
+import nyanDrawModule from '../custom-elements/nyan/draw';
+import nyanPaletteModule from '../custom-elements/nyan/palette';
+import { ActivatedRoute, Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-modeler',
   templateUrl: './modeler.component.html',
-  styleUrls: ['./modeler.component.css']
+  styleUrls: ['./modeler.component.css'],
 })
-export class ModelerComponent implements OnDestroy, AfterContentInit {
-  modeler: any;
-  private bpmnJS: BpmnJS;
+export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
+  static initialDiagram =
+    '<?xml version="1.0" encoding="UTF-8"?>' +
+    '<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
+    'xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" ' +
+    'xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" ' +
+    'xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" ' +
+    'targetNamespace="http://bpmn.io/schema/bpmn" ' +
+    'id="Definitions_1">' +
+    '<bpmn:process id="Process_1" isExecutable="false">' +
+    '<bpmn:startEvent id="StartEvent_1"/>' +
+    '</bpmn:process>' +
+    '<bpmndi:BPMNDiagram id="BPMNDiagram_1">' +
+    '<bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">' +
+    '<bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">' +
+    '<dc:Bounds height="36.0" width="36.0" x="173.0" y="102.0"/>' +
+    '</bpmndi:BPMNShape>' +
+    '</bpmndi:BPMNPlane>' +
+    '</bpmndi:BPMNDiagram>' +
+    '</bpmn:definitions>';
 
-  @ViewChild('someInput', {static: true}) private el: ElementRef;
+  private bpmnJS: any;
 
   @Output() private importDone: EventEmitter<any> = new EventEmitter();
   @Input() private url: string;
+  @ViewChild('someInput', {static: true}) private el: ElementRef;
+  @ViewChild('propertiesPanel', {static: true}) private pp: ElementRef;
+  private id: number;
+  private editMode = false;
 
-  constructor(private http: HttpClient) {
-    this.bpmnJS = new BpmnJS();
+  constructor(private http: HttpClient,
+              private router: Router,
+              private route: ActivatedRoute) {
+  }
+
+  ngOnInit(): void {
+    console.log('init');
+    this.bpmnJS = new Modeler({
+        additionalModules: [
+          PropertiesPanelModule,
+          //
+          {[InjectionNames.bpmnPropertiesProvider]: ['type', OriginalPropertiesProvider.propertiesProvider[1]]},
+          {[InjectionNames.propertiesProvider]: ['type', CustomPropsProvider]},
+
+          customPaletteProvider,
+          nyanDrawModule,
+          nyanPaletteModule
+        ],
+        keyboard: {
+          bindTo: document.body
+        }
+      }
+    );
 
     this.bpmnJS.on('import.done', ({error}) => {
       if (!error) {
@@ -30,11 +79,40 @@ export class ModelerComponent implements OnDestroy, AfterContentInit {
   }
 
   ngAfterContentInit(): void {
+
     this.bpmnJS.attachTo(this.el.nativeElement);
-    this.loadUrl('https://cdn.staticaly.com/gh/bpmn-io/bpmn-js-examples/dfceecba/starter/diagram.bpmn');
+    this.bpmnJS.get('propertiesPanel').attachTo(this.pp.nativeElement);
+
+    this.route.paramMap.subscribe((params) => {
+      this.id = +params.get('id');
+
+      this.editMode = params.get('id') != null;
+      const url: string = this.router.url;
+
+      // if (!this.editMode) {
+      if (url.match('/new')) {
+        this.bpmnJS.importXML(ModelerComponent.initialDiagram);
+      } else {
+        this.loadUrl('https://cdn.staticaly.com/gh/bpmn-io/bpmn-js-examples/dfceecba/starter/diagram.bpmn');
+      }
+    });
+
   }
 
   ngOnDestroy(): void {
+    this.bpmnJS.destroy();
+  }
+
+  save() {
+    this.bpmnJS.saveXML((err, xml) => {
+      this.downloadFile(xml);
+      return xml;
+    });
+  }
+
+  downloadFile(data) {
+    const blob = new Blob([data], {type: 'application/xml'});
+    saveAs(blob, 'grapf.xml');
   }
 
   loadUrl(url: string) {
