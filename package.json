@@ -35,9 +35,8 @@
     "zone.js": "~0.10.2",
     "diagram-js": "latest",
     "min-dash": "latest",
-    "file-saver": "^2.0.2"
-    "typescript": "~3.7.5",
-    "zone.js": "~0.10.2"
+    "file-saver": "^2.0.2",
+    "typescript": "~3.7.5"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.900.1",
