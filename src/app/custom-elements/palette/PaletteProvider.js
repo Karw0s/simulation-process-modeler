@@ -162,6 +162,10 @@ PaletteProvider.prototype.getPaletteEntries = function(element) {
       'bpmn:Task', 'activity', 'bpmn-icon-task',
       translate('Create Task')
     ),
+    'create.groovy-task': createAction(
+      'bpmn:ScriptTask', 'activity', 'bpmn-icon-script-task',
+      translate('Create Groovy Task')
+    ),
     'create.data-object': createAction(
       'bpmn:DataObjectReference', 'data-object', 'bpmn-icon-data-object',
       translate('Create DataObjectReference')

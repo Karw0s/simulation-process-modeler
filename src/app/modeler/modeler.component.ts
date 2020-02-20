@@ -7,8 +7,6 @@ import { InjectionNames, Modeler, OriginalPropertiesProvider, PropertiesPanelMod
 import { CustomPropsProvider } from '../providers/CustomPropsProvider';
 import { saveAs } from 'file-saver';
 import customPaletteProvider from '../custom-elements/palette';
-import nyanDrawModule from '../custom-elements/nyan/draw';
-import nyanPaletteModule from '../custom-elements/nyan/palette';
 import { ActivatedRoute, Router } from '@angular/router';
 
 
@@ -62,8 +60,6 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
           {[InjectionNames.propertiesProvider]: ['type', CustomPropsProvider]},
 
           customPaletteProvider,
-          nyanDrawModule,
-          nyanPaletteModule
         ],
         keyboard: {
           bindTo: document.body
