@@ -8,7 +8,12 @@ import { CustomPropsProvider } from '../providers/CustomPropsProvider';
 import { saveAs } from 'file-saver';
 import customPaletteProvider from '../custom-elements/palette';
 import { ActivatedRoute, Router } from '@angular/router';
+import * as qsExtension from 'src/assets/gs.json';
+import { MyDialogComponent } from './my-dialog/my-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
+
+const HIGH_PRIORITY = 1500;
 
 @Component({
   selector: 'app-modeler',
@@ -44,10 +49,11 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
   @ViewChild('propertiesPanel', {static: true}) private pp: ElementRef;
   private id: number;
   private editMode = false;
-
+  private dialogRef;
   constructor(private http: HttpClient,
               private router: Router,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              public dialog: MatDialog) {
   }
 
   ngOnInit(): void {
@@ -63,6 +69,9 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
         ],
         keyboard: {
           bindTo: document.body
+        },
+        moddleExtensions: {
+          gs: qsExtension
         }
       }
     );
@@ -71,6 +80,19 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
       if (!error) {
         this.bpmnJS.get('canvas').zoom('fit-viewport');
       }
+    });
+
+    // open quality assurance if user right clicks on element
+    this.bpmnJS.on('element.contextmenu', HIGH_PRIORITY, (event) => {
+      event.originalEvent.preventDefault();
+      event.originalEvent.stopPropagation();
+
+      // todo: add dialog or menu
+      this.dialogRef = this.dialog.open(MyDialogComponent, {
+        width: '250px'
+      });
+
+      console.log('dialog');
     });
   }
 

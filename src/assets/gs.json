@@ -1,0 +1,25 @@
+{
+  "name": "GroovyScript",
+  "uri": "http://some-company/schema/bpmn/gs",
+  "prefix": "gs",
+  "xml": {
+    "tagAlias": "lowerCase"
+  },
+  "types": [
+    {
+      "name": "GroovyNode",
+      "extends": [
+        "bpmn:FlowNode"
+      ],
+      "properties": [
+        {
+          "name": "script",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    }
+  ],
+  "emumerations": [],
+  "associations": []
+}

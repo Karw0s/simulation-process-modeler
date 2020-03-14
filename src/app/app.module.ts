@@ -11,13 +11,16 @@ import { HttpClientModule } from '@angular/common/http';
 import { HomeComponent } from './home/home.component';
 import { ToolbarComponent } from './toolbar/toolbar.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { MAT_DIALOG_DEFAULT_OPTIONS, MatDialogModule } from '@angular/material/dialog';
+import { MyDialogComponent } from './modeler/my-dialog/my-dialog.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ModelerComponent,
     HomeComponent,
-    ToolbarComponent
+    ToolbarComponent,
+    MyDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -26,9 +29,11 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     MatToolbarModule,
     MatButtonModule,
     HttpClientModule,
-    FlexLayoutModule
+    MatDialogModule
   ],
-  providers: [],
+  providers: [
+    {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
