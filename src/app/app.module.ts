@@ -26,6 +26,7 @@ import { MyDialogComponent } from './modeler/my-dialog/my-dialog.component';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    FlexLayoutModule,
     MatToolbarModule,
     MatButtonModule,
     HttpClientModule,
