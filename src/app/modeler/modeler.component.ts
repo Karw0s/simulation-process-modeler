@@ -1,16 +1,21 @@
 import { AfterContentInit, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { importDiagram } from './rx';
 import { HttpClient } from '@angular/common/http';
-import { InjectionNames, Modeler, OriginalPropertiesProvider, PropertiesPanelModule } from '../providers/bpmn-js';
-import { CustomPropsProvider } from '../providers/CustomPropsProvider';
-import { saveAs } from 'file-saver';
-import customPaletteProvider from '../custom-elements/palette';
-import nyanDrawModule from '../custom-elements/nyan/draw';
-import nyanPaletteModule from '../custom-elements/nyan/palette';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
+import { saveAs } from 'file-saver';
+import { CustomPropsProvider } from '../providers/CustomPropsProvider';
+import customPaletteProvider from '../custom-elements/palette';
+import { InjectionNames, Modeler, OriginalPropertiesProvider, PropertiesPanelModule } from '../providers/bpmn-js';
+import { importDiagram } from './rx';
+// @ts-ignore
+import qsExtension from 'src/assets/gs.json';
+import { MyDialogComponent } from './my-dialog/my-dialog.component';
+import { getBusinessObject } from 'bpmn-js/lib/util/ModelUtil';
 
+
+const HIGH_PRIORITY = 1500;
 
 @Component({
   selector: 'app-modeler',
@@ -46,10 +51,15 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
   @ViewChild('propertiesPanel', {static: true}) private pp: ElementRef;
   private id: number;
   private editMode = false;
+  private dialogRef;
+  private code: any;
+  private diagramElement;
+  private eeeee: any;
 
   constructor(private http: HttpClient,
               private router: Router,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              public dialog: MatDialog) {
   }
 
   ngOnInit(): void {
@@ -62,11 +72,12 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
           {[InjectionNames.propertiesProvider]: ['type', CustomPropsProvider]},
 
           customPaletteProvider,
-          nyanDrawModule,
-          nyanPaletteModule
         ],
         keyboard: {
           bindTo: document.body
+        },
+        moddleExtensions: {
+          gs: qsExtension
         }
       }
     );
@@ -76,6 +87,67 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
         this.bpmnJS.get('canvas').zoom('fit-viewport');
       }
     });
+
+    // open dialog on right click
+    this.bpmnJS.on('element.contextmenu', HIGH_PRIORITY, (event) => {
+      event.originalEvent.preventDefault();
+      event.originalEvent.stopPropagation();
+
+      const moddle = this.bpmnJS.get('moddle');
+      const modeling = this.bpmnJS.get('modeling');
+
+      if (event.element.businessObject.$type === 'bpmn:ScriptTask') {
+        this.eeeee = event;
+        const businessObject = getBusinessObject(event.element);
+        this.diagramElement = event.element;
+
+        let GroovyElement = getExtensionElement(businessObject, 'gs:GroovyNode');
+        const script = GroovyElement ? GroovyElement.script : '';
+
+        this.dialogRef = this.dialog.open(MyDialogComponent, {
+
+          data: {code: script}
+        });
+
+        this.dialogRef.afterClosed().subscribe(result => {
+
+          console.log('dialog result: ' + result);
+          if (result) {
+            let extensionElements = businessObject.extensionElements;
+            if (!extensionElements) {
+              extensionElements = moddle.create('bpmn:ExtensionElements');
+            }
+
+            if (!GroovyElement) {
+              GroovyElement = moddle.create('gs:GroovyNode');
+              extensionElements.get('values').push(GroovyElement);
+            }
+
+            GroovyElement.script = result;
+
+            modeling.updateProperties(this.diagramElement, {
+              extensionElements
+            });
+
+            this.code = result;
+          }
+        });
+
+        console.log('dialog');
+      }
+    });
+
+    function getExtensionElement(element, type) {
+      if (!element.extensionElements) {
+        return;
+      }
+
+      if (element.extensionElements.values) {
+        return element.extensionElements.values.filter((extensionElement) => {
+          return extensionElement.$instanceOf(type);
+        })[0];
+      }
+    }
   }
 
   ngAfterContentInit(): void {
@@ -104,7 +176,7 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
   }
 
   save() {
-    this.bpmnJS.saveXML((err, xml) => {
+    this.bpmnJS.saveXML({format: true}, (err, xml) => {
       this.downloadFile(xml);
       return xml;
     });
