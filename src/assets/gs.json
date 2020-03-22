@@ -8,9 +8,7 @@
   "types": [
     {
       "name": "GroovyNode",
-      "extends": [
-        "bpmn:FlowNode"
-      ],
+      "superClass": ["Element"],
       "properties": [
         {
           "name": "script",

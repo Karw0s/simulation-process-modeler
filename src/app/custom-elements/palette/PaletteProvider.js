@@ -7,9 +7,9 @@ import {
  * A palette provider for BPMN 2.0 elements.
  */
 export default function PaletteProvider(
-    palette, create, elementFactory,
-    spaceTool, lassoTool, handTool,
-    globalConnect, translate) {
+  palette, create, elementFactory,
+  spaceTool, lassoTool, handTool,
+  globalConnect, translate) {
 
   this._palette = palette;
   this._create = create;
@@ -35,21 +35,21 @@ PaletteProvider.$inject = [
 ];
 
 
-PaletteProvider.prototype.getPaletteEntries = function(element) {
+PaletteProvider.prototype.getPaletteEntries = function (element) {
 
   var actions = {},
-      create = this._create,
-      elementFactory = this._elementFactory,
-      spaceTool = this._spaceTool,
-      lassoTool = this._lassoTool,
-      handTool = this._handTool,
-      globalConnect = this._globalConnect,
-      translate = this._translate;
+    create = this._create,
+    elementFactory = this._elementFactory,
+    spaceTool = this._spaceTool,
+    lassoTool = this._lassoTool,
+    handTool = this._handTool,
+    globalConnect = this._globalConnect,
+    translate = this._translate;
 
   function createAction(type, group, className, title, options) {
 
     function createListener(event) {
-      var shape = elementFactory.createShape(assign({ type: type }, options));
+      var shape = elementFactory.createShape(assign({type: type}, options));
 
       if (options) {
         shape.businessObject.di.isExpanded = options.isExpanded;
@@ -63,7 +63,7 @@ PaletteProvider.prototype.getPaletteEntries = function(element) {
     return {
       group: group,
       className: className,
-      title: title || translate('Create {type}', { type: shortType }),
+      title: title || translate('Create {type}', {type: shortType}),
       action: {
         dragstart: createListener,
         click: createListener
@@ -86,9 +86,9 @@ PaletteProvider.prototype.getPaletteEntries = function(element) {
       parent: subProcess
     });
 
-    create.start(event, [ subProcess, startEvent ], {
+    create.start(event, [subProcess, startEvent], {
       hints: {
-        autoSelect: [ startEvent ]
+        autoSelect: [startEvent]
       }
     });
   }
@@ -103,7 +103,7 @@ PaletteProvider.prototype.getPaletteEntries = function(element) {
       className: 'bpmn-icon-hand-tool',
       title: translate('Activate the hand tool'),
       action: {
-        click: function(event) {
+        click: function (event) {
           handTool.activateHand(event);
         }
       }
@@ -113,7 +113,7 @@ PaletteProvider.prototype.getPaletteEntries = function(element) {
       className: 'bpmn-icon-lasso-tool',
       title: translate('Activate the lasso tool'),
       action: {
-        click: function(event) {
+        click: function (event) {
           lassoTool.activateSelection(event);
         }
       }
@@ -123,7 +123,7 @@ PaletteProvider.prototype.getPaletteEntries = function(element) {
       className: 'bpmn-icon-space-tool',
       title: translate('Activate the create/remove space tool'),
       action: {
-        click: function(event) {
+        click: function (event) {
           spaceTool.activateSelection(event);
         }
       }
@@ -133,7 +133,7 @@ PaletteProvider.prototype.getPaletteEntries = function(element) {
       className: 'bpmn-icon-connection-multi',
       title: translate('Activate the global connect tool'),
       action: {
-        click: function(event) {
+        click: function (event) {
           globalConnect.toggle(event);
         }
       }
@@ -162,10 +162,31 @@ PaletteProvider.prototype.getPaletteEntries = function(element) {
       'bpmn:Task', 'activity', 'bpmn-icon-task',
       translate('Create Task')
     ),
-    'create.groovy-task': createAction(
-      'bpmn:ScriptTask', 'activity', 'bpmn-icon-script-task',
-      translate('Create Groovy Task')
-    ),
+    'create.groovy-task': {
+      group: 'event',
+      className: 'bpmn-icon-script-task',
+      title: translate('Create Groovy Task'),
+      action: {
+        click: function (event) {
+          var shape = elementFactory.createShape({
+            type: 'bpmn:ScriptTask'
+          });
+
+          create.start(event, shape)
+        },
+        dragstart: function (event) {
+          var shape = elementFactory.createShape({
+            type: 'bpmn:ScriptTask'
+          });
+
+          create.start(event, shape)
+        }
+      }
+    },
+    // 'create.groovy-task': createAction(
+    //   'bpmn:ScriptTask', 'activity', 'bpmn-icon-script-task',
+    //   translate('Create Groovy Task')
+    // ),
     'create.data-object': createAction(
       'bpmn:DataObjectReference', 'data-object', 'bpmn-icon-data-object',
       translate('Create DataObjectReference')

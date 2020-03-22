@@ -1,16 +1,18 @@
 import { AfterContentInit, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { importDiagram } from './rx';
 import { HttpClient } from '@angular/common/http';
-import { InjectionNames, Modeler, OriginalPropertiesProvider, PropertiesPanelModule } from '../providers/bpmn-js';
-import { CustomPropsProvider } from '../providers/CustomPropsProvider';
-import { saveAs } from 'file-saver';
-import customPaletteProvider from '../custom-elements/palette';
-import { ActivatedRoute, Router } from '@angular/router';
-import * as qsExtension from 'src/assets/gs.json';
-import { MyDialogComponent } from './my-dialog/my-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { ActivatedRoute, Router } from '@angular/router';
+import { saveAs } from 'file-saver';
+import { CustomPropsProvider } from '../providers/CustomPropsProvider';
+import customPaletteProvider from '../custom-elements/palette';
+import { InjectionNames, Modeler, OriginalPropertiesProvider, PropertiesPanelModule } from '../providers/bpmn-js';
+import { importDiagram } from './rx';
+// @ts-ignore
+import qsExtension from 'src/assets/gs.json';
+import { MyDialogComponent } from './my-dialog/my-dialog.component';
+import { getBusinessObject } from 'bpmn-js/lib/util/ModelUtil';
 
 
 const HIGH_PRIORITY = 1500;
@@ -50,6 +52,10 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
   private id: number;
   private editMode = false;
   private dialogRef;
+  private code: any;
+  private diagramElement;
+  private eeeee: any;
+
   constructor(private http: HttpClient,
               private router: Router,
               private route: ActivatedRoute,
@@ -82,18 +88,61 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
       }
     });
 
-    // open quality assurance if user right clicks on element
+    // open dialog on right click
     this.bpmnJS.on('element.contextmenu', HIGH_PRIORITY, (event) => {
       event.originalEvent.preventDefault();
       event.originalEvent.stopPropagation();
 
-      // todo: add dialog or menu
-      this.dialogRef = this.dialog.open(MyDialogComponent, {
-        width: '250px'
-      });
+      const moddle = this.bpmnJS.get('moddle');
+      const modeling = this.bpmnJS.get('modeling');
 
-      console.log('dialog');
+      if (event.element.businessObject.$type === 'bpmn:ScriptTask') {
+        this.eeeee = event;
+        const businessObject = getBusinessObject(event.element);
+        this.diagramElement = event.element;
+
+        let GroovyElement = getExtensionElement(businessObject, 'gs:GroovyNode');
+        const script = GroovyElement ? GroovyElement.script : '';
+
+        this.dialogRef = this.dialog.open(MyDialogComponent, {
+
+          data: {code: script}
+        });
+
+        this.dialogRef.afterClosed().subscribe(result => {
+          let extensionElements = businessObject.extensionElement;
+          if (!extensionElements) {
+            extensionElements = moddle.create('bpmn:ExtensionElements');
+          }
+
+          if (!GroovyElement) {
+            GroovyElement = moddle.create('gs:GroovyNode');
+            extensionElements.get('values').push(GroovyElement);
+          }
+
+          GroovyElement.script = result;
+
+          modeling.updateProperties(this.diagramElement, {
+            extensionElements
+          });
+
+          console.log(result);
+          this.code = result;
+        });
+
+        console.log('dialog');
+      }
     });
+
+    function getExtensionElement(element, type) {
+      if (!element.extensionElements) {
+        return;
+      }
+
+      return element.extensionElements.values.filter((extensionElement) => {
+        return extensionElement.$instanceOf(type);
+      })[0];
+    }
   }
 
   ngAfterContentInit(): void {

@@ -26,7 +26,7 @@ GroovyTaskPaletteProvider.prototype.getPaletteEntries = function() {
     var serviceTaskShape = elementFactory.create(
       'shape', { type: 'bpmn:ScriptTask' }
     );
-
+    serviceTaskShape.businessObject.script = "console.log();";
     create.start(event, serviceTaskShape);
   }
 
