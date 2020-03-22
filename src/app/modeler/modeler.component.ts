@@ -110,24 +110,27 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
         });
 
         this.dialogRef.afterClosed().subscribe(result => {
-          let extensionElements = businessObject.extensionElement;
-          if (!extensionElements) {
-            extensionElements = moddle.create('bpmn:ExtensionElements');
+
+          console.log('dialog result: ' + result);
+          if (result) {
+            let extensionElements = businessObject.extensionElements;
+            if (!extensionElements) {
+              extensionElements = moddle.create('bpmn:ExtensionElements');
+            }
+
+            if (!GroovyElement) {
+              GroovyElement = moddle.create('gs:GroovyNode');
+              extensionElements.get('values').push(GroovyElement);
+            }
+
+            GroovyElement.script = result;
+
+            modeling.updateProperties(this.diagramElement, {
+              extensionElements
+            });
+
+            this.code = result;
           }
-
-          if (!GroovyElement) {
-            GroovyElement = moddle.create('gs:GroovyNode');
-            extensionElements.get('values').push(GroovyElement);
-          }
-
-          GroovyElement.script = result;
-
-          modeling.updateProperties(this.diagramElement, {
-            extensionElements
-          });
-
-          console.log(result);
-          this.code = result;
         });
 
         console.log('dialog');
@@ -139,9 +142,11 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
         return;
       }
 
-      return element.extensionElements.values.filter((extensionElement) => {
-        return extensionElement.$instanceOf(type);
-      })[0];
+      if (element.extensionElements.values) {
+        return element.extensionElements.values.filter((extensionElement) => {
+          return extensionElement.$instanceOf(type);
+        })[0];
+      }
     }
   }
 
@@ -171,7 +176,7 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
   }
 
   save() {
-    this.bpmnJS.saveXML((err, xml) => {
+    this.bpmnJS.saveXML({format: true}, (err, xml) => {
       this.downloadFile(xml);
       return xml;
     });
