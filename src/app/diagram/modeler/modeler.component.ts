@@ -5,14 +5,15 @@ import { HttpClient } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { saveAs } from 'file-saver';
-import { CustomPropsProvider } from '../providers/CustomPropsProvider';
-import customPaletteProvider from '../custom-elements/palette';
-import { InjectionNames, Modeler, OriginalPropertiesProvider, PropertiesPanelModule } from '../providers/bpmn-js';
+import { CustomPropsProvider } from '../../providers/CustomPropsProvider';
+import customPaletteProvider from '../../custom-elements/palette/index';
+import { InjectionNames, Modeler, OriginalPropertiesProvider, PropertiesPanelModule } from '../../providers/bpmn-js';
 import { importDiagram } from './rx';
 // @ts-ignore
 import qsExtension from 'src/assets/gs.json';
-import { MyDialogComponent } from './my-dialog/my-dialog.component';
+import { CodeDialogComponent } from './code-dialog/code-dialog.component';
 import { getBusinessObject } from 'bpmn-js/lib/util/ModelUtil';
+import { DiagramService } from '../diagram.service';
 
 
 const HIGH_PRIORITY = 1500;
@@ -23,6 +24,14 @@ const HIGH_PRIORITY = 1500;
   styleUrls: ['./modeler.component.css'],
 })
 export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
+
+  constructor(private diagramService: DiagramService,
+              private http: HttpClient,
+              private router: Router,
+              private route: ActivatedRoute,
+              public dialog: MatDialog) {
+  }
+
   static initialDiagram =
     '<?xml version="1.0" encoding="UTF-8"?>' +
     '<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
@@ -45,6 +54,7 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
 
   private bpmnJS: any;
 
+
   @Output() private importDone: EventEmitter<any> = new EventEmitter();
   @Input() private url: string;
   @ViewChild('someInput', {static: true}) private el: ElementRef;
@@ -55,12 +65,7 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
   private code: any;
   private diagramElement;
   private eeeee: any;
-
-  constructor(private http: HttpClient,
-              private router: Router,
-              private route: ActivatedRoute,
-              public dialog: MatDialog) {
-  }
+  private toolbarActions: any;
 
   ngOnInit(): void {
     console.log('init');
@@ -81,6 +86,12 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
         }
       }
     );
+
+    // this.toolbarActions = {
+    //   undo: this.trigger_undo(),
+    //   redo: this.trigger_redo(),
+    //   save: this.save()
+    // };
 
     this.bpmnJS.on('import.done', ({error}) => {
       if (!error) {
@@ -104,7 +115,7 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
         let GroovyElement = getExtensionElement(businessObject, 'gs:GroovyNode');
         const script = GroovyElement ? GroovyElement.script : '';
 
-        this.dialogRef = this.dialog.open(MyDialogComponent, {
+        this.dialogRef = this.dialog.open(CodeDialogComponent, {
 
           data: {code: script}
         });
@@ -175,18 +186,6 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
     this.bpmnJS.destroy();
   }
 
-  save() {
-    this.bpmnJS.saveXML({format: true}, (err, xml) => {
-      this.downloadFile(xml);
-      return xml;
-    });
-  }
-
-  downloadFile(data) {
-    const blob = new Blob([data], {type: 'application/xml'});
-    saveAs(blob, 'grapf.xml');
-  }
-
   loadUrl(url: string) {
 
     return (
@@ -210,4 +209,46 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
     );
   }
 
+  toolBarEvent(action: string) {
+    switch (action) {
+      case 'undo':
+        this.trigger_undo();
+        break;
+      case 'redo':
+        this.trigger_redo();
+        break;
+      case 'save':
+        this.save();
+        break;
+      case 'new diagram':
+        this.router.navigate(['/modeler/new']);
+        break;
+      case 'load':
+        this.bpmnJS.importXML(this.diagramService.getDiagram().diagram);
+        break;
+      case 'open diagram':
+        break;
+    }
+    // this.toolbarActions[action];
+  }
+
+  trigger_undo() {
+    this.bpmnJS.injector._instances.editorActions.trigger('undo');
+  }
+
+  trigger_redo() {
+    this.bpmnJS.injector._instances.editorActions.trigger('redo');
+  }
+
+  save() {
+    this.bpmnJS.saveXML({format: true}, (err, xml) => {
+      this.downloadFile(xml);
+      return xml;
+    });
+  }
+
+  downloadFile(data) {
+    const blob = new Blob([data], {type: 'application/xml'});
+    saveAs(blob, 'grapf.xml');
+  }
 }
