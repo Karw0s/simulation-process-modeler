@@ -13,6 +13,7 @@ import { importDiagram } from './rx';
 import qsExtension from 'src/assets/gs.json';
 import { CodeDialogComponent } from './code-dialog/code-dialog.component';
 import { getBusinessObject } from 'bpmn-js/lib/util/ModelUtil';
+import { DiagramService } from '../diagram.service';
 
 
 const HIGH_PRIORITY = 1500;
@@ -24,7 +25,8 @@ const HIGH_PRIORITY = 1500;
 })
 export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
 
-  constructor(private http: HttpClient,
+  constructor(private diagramService: DiagramService,
+              private http: HttpClient,
               private router: Router,
               private route: ActivatedRoute,
               public dialog: MatDialog) {
@@ -220,6 +222,9 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
         break;
       case 'new diagram':
         this.router.navigate(['/modeler/new']);
+        break;
+      case 'load':
+        this.bpmnJS.importXML(this.diagramService.getDiagram().diagram);
         break;
       case 'open diagram':
         break;

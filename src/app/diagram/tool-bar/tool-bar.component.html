@@ -6,7 +6,7 @@
 
   <mat-menu #menu="matMenu">
     <button mat-menu-item (click)="triggerAction('new diagram')">New diagram</button>
-    <button mat-menu-item>Open file</button>
+    <button mat-menu-item (click)="triggerAction('open file')">Open file</button>
   </mat-menu>
 
   <mat-divider class="style-fix" [vertical]="true"></mat-divider>
@@ -22,6 +22,11 @@
   </button>
 
   <button mat-icon-button (click)="triggerAction('redo')">
-    <mat-icon class="mirror" >replay</mat-icon>
+    <mat-icon class="mirror">replay</mat-icon>
+  </button>
+  <button mat-icon-button (click)="file.click()">
+    <mat-icon>attach_file</mat-icon>
   </button>
 </mat-toolbar>
+
+<input #file hidden type="file" accept="text/xml" (change)="openFile(file.files)">
