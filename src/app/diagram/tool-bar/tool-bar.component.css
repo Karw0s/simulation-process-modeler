@@ -1,0 +1,12 @@
+mat-divider.style-fix {
+  height: 36px;
+  margin-left: 8px;
+  margin-right: 8px;
+}
+
+.mirror {
+  transform: scale(1, -1) rotate(90deg);
+}
+.rotate-270 {
+  transform: rotate(270deg);
+}

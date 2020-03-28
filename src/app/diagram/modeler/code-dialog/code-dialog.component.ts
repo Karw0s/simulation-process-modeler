@@ -3,13 +3,13 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DialogData } from '../dialog-data';
 
 @Component({
-  selector: 'app-my-dialog',
-  templateUrl: './my-dialog.component.html',
-  styleUrls: ['./my-dialog.component.css']
+  selector: 'app-code-dialog',
+  templateUrl: './code-dialog.component.html',
+  styleUrls: ['./code-dialog.component.css']
 })
-export class MyDialogComponent {
+export class CodeDialogComponent {
 
-  constructor(public dialogRef: MatDialogRef<MyDialogComponent>,
+  constructor(public dialogRef: MatDialogRef<CodeDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
 
   onNoClick() {
