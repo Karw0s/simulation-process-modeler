@@ -23,6 +23,7 @@
     "@angular/platform-browser": "~9.0.6",
     "@angular/platform-browser-dynamic": "~9.0.6",
     "@angular/router": "~9.0.6",
+    "express": "^4.17.1",
     "bpmn-js": "^6.3.0",
     "bpmn-js-properties-panel": "^0.33.1",
     "bpmn-moddle": "^6.0.2",
