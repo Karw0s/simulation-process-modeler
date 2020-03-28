@@ -1,9 +1,11 @@
+/*@import "~bpmn-js-properties-panel/styles/properties.less";*/
+
 .diagram-container {
   height: 100%;
   width: 100%;
 }
 .diagram-parent {
-  height: 400px;
+  height: 800px;
   border: solid 3px #EEE;
   position: relative;
 }

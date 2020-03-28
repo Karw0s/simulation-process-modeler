@@ -1,0 +1,32 @@
+<mat-toolbar>
+  <button mat-icon-button [mat-menu-trigger-for]="menu">
+    <mat-icon fontSet="material-icons-outlined">insert_drive_file</mat-icon>
+    <mat-icon>arrow_drop_down</mat-icon>
+  </button>
+
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item (click)="triggerAction('new diagram')">New diagram</button>
+    <button mat-menu-item (click)="triggerAction('open file')">Open file</button>
+  </mat-menu>
+
+  <mat-divider class="style-fix" [vertical]="true"></mat-divider>
+
+  <button mat-icon-button (click)="triggerAction('save')">
+    <mat-icon>save</mat-icon>
+  </button>
+
+  <mat-divider class="style-fix" [vertical]="true"></mat-divider>
+
+  <button mat-icon-button (click)="triggerAction('undo')">
+    <mat-icon class="rotate-270">replay</mat-icon>
+  </button>
+
+  <button mat-icon-button (click)="triggerAction('redo')">
+    <mat-icon class="mirror">replay</mat-icon>
+  </button>
+  <button mat-icon-button (click)="file.click()">
+    <mat-icon>attach_file</mat-icon>
+  </button>
+</mat-toolbar>
+
+<input #file hidden type="file" accept="text/xml" (change)="openFile(file.files)">
