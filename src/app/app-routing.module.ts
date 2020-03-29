@@ -2,10 +2,12 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ModelerComponent } from './diagram/modeler/modeler.component';
 import { HomeComponent } from './home/home.component';
+import { ViewerComponent } from './diagram/viewer/viewer.component';
 
 const routes: Routes = [
   {path: '', redirectTo: '/home', pathMatch: 'full'},
   {path: 'home', component: HomeComponent},
+  {path: 'viewer', component: ViewerComponent},
   {path: 'modeler', component: ModelerComponent},
   {path: 'modeler/new', component: ModelerComponent, runGuardsAndResolvers: 'always'},
 ];

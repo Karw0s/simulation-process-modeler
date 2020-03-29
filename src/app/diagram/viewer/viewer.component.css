@@ -1,0 +1,9 @@
+.diagram-container {
+  height: 100%;
+  width: 100%;
+}
+.diagram-parent {
+  height: 800px;
+  border: solid 3px #EEE;
+  position: relative;
+}
