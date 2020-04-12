@@ -9,6 +9,7 @@ const routes: Routes = [
   {path: 'home', component: HomeComponent},
   {path: 'viewer', component: ViewerComponent},
   {path: 'modeler', component: ModelerComponent},
+  {path: 'modeler/:id', component: ModelerComponent},
   {path: 'modeler/new', component: ModelerComponent, runGuardsAndResolvers: 'always'},
 ];
 

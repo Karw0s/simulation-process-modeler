@@ -21,6 +21,8 @@ import { ToolBarComponent } from './diagram/tool-bar/tool-bar.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
+import { DiagramsListComponent } from './diagrams-list/diagrams-list.component';
+import { DiagramsListItemComponent } from './diagrams-list/diagrams-list-item/diagrams-list-item.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +32,9 @@ import { MatDividerModule } from '@angular/material/divider';
     NavBarComponent,
     CodeDialogComponent,
     ViewerComponent,
-    ToolBarComponent
+    ToolBarComponent,
+    DiagramsListComponent,
+    DiagramsListItemComponent
   ],
   imports: [
     BrowserModule,
