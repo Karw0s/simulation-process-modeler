@@ -21,6 +21,11 @@ import { ToolBarComponent } from './diagram/tool-bar/tool-bar.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
+import { DiagramsListComponent } from './diagrams-list/diagrams-list.component';
+import { DiagramsListItemComponent } from './diagrams-list/diagrams-list-item/diagrams-list-item.component';
+import { MatCardModule } from '@angular/material/card';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ConfirmationDialogComponent } from './shared/confirmation-dialog/confirmation-dialog.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +35,10 @@ import { MatDividerModule } from '@angular/material/divider';
     NavBarComponent,
     CodeDialogComponent,
     ViewerComponent,
-    ToolBarComponent
+    ToolBarComponent,
+    DiagramsListComponent,
+    DiagramsListItemComponent,
+    ConfirmationDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -46,7 +54,9 @@ import { MatDividerModule } from '@angular/material/divider';
     MatInputModule,
     MatIconModule,
     MatMenuModule,
-    MatDividerModule
+    MatDividerModule,
+    MatCardModule,
+    MatProgressSpinnerModule
   ],
   providers: [],
   bootstrap: [AppComponent]

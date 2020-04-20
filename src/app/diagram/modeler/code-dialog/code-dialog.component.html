@@ -1,13 +1,18 @@
-
 <h1 mat-dialog-title>Put Your Code Here</h1>
 <div mat-dialog-content>
-  <p>Code</p>
-  <mat-form-field>
-    <mat-label>Code</mat-label>
-    <textarea matInput [(ngModel)]="data.code"></textarea>
-  </mat-form-field>
+  <div fxFill>
+    <mat-form-field appearance="fill" style="width: 600px">
+      <mat-label>Code</mat-label>
+      <textarea
+        matInput
+        cdkTextareaAutosize
+        cdkAutosizeMinRows="20"
+        cdkAutosizeMaxRows="20"
+        [(ngModel)]="data.code"></textarea>
+    </mat-form-field>
+  </div>
 </div>
-<div mat-dialog-actions>
-  <button mat-button (click)="onNoClick()">Cancel</button>
-  <button mat-button [mat-dialog-close]="data.code" cdkFocusInitial>Ok</button>
+<div fxLayout="row" fxLayoutAlign="end" mat-dialog-actions>
+  <button mat-raised-button color="warn" (click)="onNoClick()">Cancel</button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="data.code" cdkFocusInitial>Apply</button>
 </div>

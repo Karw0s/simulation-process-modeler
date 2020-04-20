@@ -25,13 +25,6 @@ const HIGH_PRIORITY = 1500;
 })
 export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
 
-  constructor(private diagramService: DiagramService,
-              private http: HttpClient,
-              private router: Router,
-              private route: ActivatedRoute,
-              public dialog: MatDialog) {
-  }
-
   static initialDiagram =
     '<?xml version="1.0" encoding="UTF-8"?>' +
     '<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
@@ -52,20 +45,25 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
     '</bpmndi:BPMNDiagram>' +
     '</bpmn:definitions>';
 
-  private bpmnJS: any;
-
-
   @Output() private importDone: EventEmitter<any> = new EventEmitter();
   @Input() private url: string;
-  @ViewChild('someInput', {static: true}) private el: ElementRef;
+  @ViewChild('diagramContainer', {static: true}) private el: ElementRef;
   @ViewChild('propertiesPanel', {static: true}) private pp: ElementRef;
-  private id: number;
+  private bpmnJS: any;
+  private id: string;
   private editMode = false;
   private dialogRef;
   private code: any;
   private diagramElement;
   private eeeee: any;
   private toolbarActions: any;
+
+  constructor(private diagramService: DiagramService,
+              private http: HttpClient,
+              private router: Router,
+              private route: ActivatedRoute,
+              public dialog: MatDialog) {
+  }
 
   ngOnInit(): void {
     console.log('init');
@@ -116,7 +114,8 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
         const script = GroovyElement ? GroovyElement.script : '';
 
         this.dialogRef = this.dialog.open(CodeDialogComponent, {
-
+          height: '575px',
+          width: '650px',
           data: {code: script}
         });
 
@@ -167,17 +166,24 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
     this.bpmnJS.get('propertiesPanel').attachTo(this.pp.nativeElement);
 
     this.route.paramMap.subscribe((params) => {
-      this.id = +params.get('id');
+      this.id = params.get('id');
+
+      if (this.id != null) {
+        this.diagramService.getDiagram(this.id)
+          .subscribe(
+            diagramXML => {
+              this.bpmnJS.importXML(diagramXML);
+            }
+          );
+      }
 
       this.editMode = params.get('id') != null;
       const url: string = this.router.url;
 
-      // if (!this.editMode) {
-      if (url.match('/new')) {
+      if (!this.editMode || url.match('/new')) {
         this.bpmnJS.importXML(ModelerComponent.initialDiagram);
-      } else {
-        this.loadUrl('https://cdn.staticaly.com/gh/bpmn-io/bpmn-js-examples/dfceecba/starter/diagram.bpmn');
       }
+      //   this.loadUrl('https://cdn.staticaly.com/gh/bpmn-io/bpmn-js-examples/dfceecba/starter/diagram.bpmn');
     });
 
   }
@@ -223,10 +229,11 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
       case 'new diagram':
         this.router.navigate(['/modeler/new']);
         break;
-      case 'load':
-        this.bpmnJS.importXML(this.diagramService.getDiagram().diagram);
-        break;
-      case 'open diagram':
+      // case 'load':
+      //   this.bpmnJS.importXML(this.diagramService.getDiagram().diagram);
+      //   break;
+      case 'download_img':
+        this.downloadImg();
         break;
     }
     // this.toolbarActions[action];
@@ -242,13 +249,20 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
 
   save() {
     this.bpmnJS.saveXML({format: true}, (err, xml) => {
-      this.downloadFile(xml);
+      this.downloadFile(xml, 'application/xml', 'grapf.bpmn');
       return xml;
     });
   }
 
-  downloadFile(data) {
-    const blob = new Blob([data], {type: 'application/xml'});
-    saveAs(blob, 'grapf.xml');
+  downloadImg() {
+    this.bpmnJS.saveSVG((err, svg) => {
+      console.log(svg);
+      this.downloadFile(svg, 'image/svg+xml', 'diagram.svg');
+    });
+  }
+
+  downloadFile(data, dataType, fileName) {
+    const blob = new Blob([data], {type: dataType});
+    saveAs(blob, fileName);
   }
 }

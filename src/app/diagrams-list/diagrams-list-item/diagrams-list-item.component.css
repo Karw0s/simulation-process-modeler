@@ -1,0 +1,14 @@
+button {
+  margin: 5px;
+}
+.content {
+  height: calc(100% - 32px);
+}
+.diagram-img {
+  margin-bottom: 10px;
+}
+
+.card {
+  max-width: 200px;
+  height: 200px;
+}

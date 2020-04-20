@@ -6,7 +6,7 @@
 
   <mat-menu #menu="matMenu">
     <button mat-menu-item (click)="triggerAction('new diagram')">New diagram</button>
-    <button mat-menu-item (click)="triggerAction('open file')">Open file</button>
+    <button mat-menu-item (click)="file.click()">Open file</button>
   </mat-menu>
 
   <mat-divider class="style-fix" [vertical]="true"></mat-divider>
@@ -24,8 +24,11 @@
   <button mat-icon-button (click)="triggerAction('redo')">
     <mat-icon class="mirror">replay</mat-icon>
   </button>
-  <button mat-icon-button (click)="file.click()">
-    <mat-icon>attach_file</mat-icon>
+
+  <mat-divider class="style-fix" [vertical]="true"></mat-divider>
+
+  <button mat-icon-button (click)="triggerAction('download_img')">
+    <mat-icon fontSet="material-icons-outlined">image</mat-icon>
   </button>
 </mat-toolbar>
 

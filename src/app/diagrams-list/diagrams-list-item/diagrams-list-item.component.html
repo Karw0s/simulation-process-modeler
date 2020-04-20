@@ -1,0 +1,18 @@
+<mat-card class="card">
+  <mat-card-header>
+    <mat-card-title>{{diagram.name}}</mat-card-title>
+  </mat-card-header>
+  <div fxLayout="column" fxLayoutAlign="end center" class="content">
+    <div fxLayout="row" fxFlex fxLayoutAlign="center center">
+      <img mat-card-image class="diagram-img" src="assets/diagrams_png/{{diagram.image}}" alt="Photo of a Shiba Inu">
+    </div>
+
+    <div fxLayout="row" fxFlex="25" fxLayoutAlign="space-around start">
+      <button mat-stroked-button color="primary" style="cursor: pointer" routerLink="/modeler/{{diagram.id}}">Open
+      </button>
+      <button mat-stroked-button color="warn" (click)="deleteDiagram(diagram.id)"> Delete</button>
+    </div>
+  </div>
+</mat-card>
+
+
