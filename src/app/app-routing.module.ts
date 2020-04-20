@@ -8,9 +8,11 @@ const routes: Routes = [
   {path: '', redirectTo: '/home', pathMatch: 'full'},
   {path: 'home', component: HomeComponent},
   {path: 'viewer', component: ViewerComponent},
-  {path: 'modeler', component: ModelerComponent},
-  {path: 'modeler/:id', component: ModelerComponent},
-  {path: 'modeler/new', component: ModelerComponent, runGuardsAndResolvers: 'always'},
+  {path: 'modeler', children: [
+      {path: '', component: ModelerComponent},
+      {path: ':id', component: ModelerComponent},
+      {path: 'new', component: ModelerComponent, runGuardsAndResolvers: 'always'}
+      ]},
 ];
 
 @NgModule({

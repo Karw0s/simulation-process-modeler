@@ -180,12 +180,10 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
       this.editMode = params.get('id') != null;
       const url: string = this.router.url;
 
-      // if (!this.editMode) {
-      // if (url.match('/new')) {
-      //   this.bpmnJS.importXML(ModelerComponent.initialDiagram);
-      // } else {
+      if (!this.editMode || url.match('/new')) {
+        this.bpmnJS.importXML(ModelerComponent.initialDiagram);
+      }
       //   this.loadUrl('https://cdn.staticaly.com/gh/bpmn-io/bpmn-js-examples/dfceecba/starter/diagram.bpmn');
-      // }
     });
 
   }
