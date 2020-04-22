@@ -23,9 +23,9 @@ export class DiagramService {
     this.diagram = file;
   }
 
-  // getDiagram(): DiagramStructfileNameADiagram {
-  //   return this.diagram;
-  // }
+  getDiagramFromFile(): DiagramStructfileNameADiagram {
+    return this.diagram;
+  }
 
   getDiagramsList() {
     return this.httpClient.get<DiagramStruct[]>(this.apiEndpoint);
@@ -34,4 +34,6 @@ export class DiagramService {
   getDiagram(id: string) {
     return this.httpClient.get(`${this.apiEndpoint}/${id}`, {responseType: 'text'});
   }
+
+  saveDiagram() {}
 }

@@ -216,6 +216,7 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
   }
 
   toolBarEvent(action: string) {
+    console.log(`Modeler received ${action} from toolbar.`);
     switch (action) {
       case 'undo':
         this.trigger_undo();
@@ -229,9 +230,9 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
       case 'new diagram':
         this.router.navigate(['/modeler/new']);
         break;
-      // case 'load':
-      //   this.bpmnJS.importXML(this.diagramService.getDiagram().diagram);
-      //   break;
+      case 'load':
+        this.bpmnJS.importXML(this.diagramService.getDiagramFromFile().diagram);
+        break;
       case 'download_img':
         this.downloadImg();
         break;

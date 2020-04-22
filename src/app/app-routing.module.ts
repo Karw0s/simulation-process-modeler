@@ -7,7 +7,10 @@ import { ViewerComponent } from './diagram/viewer/viewer.component';
 const routes: Routes = [
   {path: '', redirectTo: '/home', pathMatch: 'full'},
   {path: 'home', component: HomeComponent},
-  {path: 'viewer', component: ViewerComponent},
+  {path: 'viewer', children: [
+      {path: '', component: ViewerComponent},
+      {path: ':id', component: ViewerComponent}
+    ]},
   {path: 'modeler', children: [
       {path: '', component: ModelerComponent},
       {path: ':id', component: ModelerComponent},
