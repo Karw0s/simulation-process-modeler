@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { DiagramService } from '../diagram.service';
 
 @Component({
@@ -8,6 +8,7 @@ import { DiagramService } from '../diagram.service';
 })
 export class ToolBarComponent implements OnInit {
 
+  @Input() private editMode: boolean;
   @Output() toolBarEvent = new EventEmitter<string>();
   @Output() file = new EventEmitter<string>();
 

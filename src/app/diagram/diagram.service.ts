@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { DiagramStruct } from '../models/DiagramStruct';
 
-interface DiagramStructfileNameADiagram {
+interface DiagramStructFileNameADiagram {
   fileName: string;
   diagram: string | ArrayBuffer;
 }
@@ -14,16 +13,16 @@ interface DiagramStructfileNameADiagram {
 })
 export class DiagramService {
 
-  diagram: DiagramStructfileNameADiagram;
+  diagram: DiagramStructFileNameADiagram;
   apiEndpoint = environment.apiServer + '/diagrams';
 
   constructor(private httpClient: HttpClient) { }
 
-  setDiagram(file: DiagramStructfileNameADiagram) {
+  setDiagram(file: DiagramStructFileNameADiagram) {
     this.diagram = file;
   }
 
-  getDiagramFromFile(): DiagramStructfileNameADiagram {
+  getDiagramFromFile(): DiagramStructFileNameADiagram {
     return this.diagram;
   }
 
@@ -31,9 +30,9 @@ export class DiagramService {
     return this.httpClient.get<DiagramStruct[]>(this.apiEndpoint);
   }
 
-  getDiagram(id: string) {
+  getDiagram(id: number) {
     return this.httpClient.get(`${this.apiEndpoint}/${id}`, {responseType: 'text'});
   }
 
-  saveDiagram() {}
+  saveDiagram(saveXML: any) {}
 }

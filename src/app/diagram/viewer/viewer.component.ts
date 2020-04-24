@@ -84,7 +84,26 @@ export class ViewerComponent implements OnInit, OnDestroy, AfterContentInit {
   }
 
   toolBarEvent(action: string) {
-
+    switch (action) {
+      case 'new_diagram':
+        this.router.navigate(['/modeler/new']);
+        break;
+      case 'save':
+        console.log('saving to .bpmn file');
+        break;
+      case 'download_img':
+        console.log('downloading image');
+        break;
+      case 'stop_sim':
+        console.log('stop_sim');
+        break;
+      case 'start_sim':
+        console.log('start_sim');
+        break;
+      case 'sim_parameters':
+        console.log('sim_parameters');
+        break;
+    }
   }
 
 
