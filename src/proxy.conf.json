@@ -1,0 +1,7 @@
+{
+  "/*": {
+    "target": "https://simulation-process-modeler-api.herokuapp.com",
+    "secure": false,
+    "logLevel": "debug"
+  }
+}
