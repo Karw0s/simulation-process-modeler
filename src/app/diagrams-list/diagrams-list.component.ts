@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { DiagramStruct } from '../models/DiagramStruct';
 import { DiagramService } from '../diagram/diagram.service';
 import { finalize } from 'rxjs/operators';
+import { DiagramDetailsDTO } from '../models/diagram-details-dto';
 
 @Component({
   selector: 'app-diagrams-list',
@@ -9,7 +9,7 @@ import { finalize } from 'rxjs/operators';
   styleUrls: ['./diagrams-list.component.css']
 })
 export class DiagramsListComponent implements OnInit {
-  diagrams: DiagramStruct[];
+  diagrams: DiagramDetailsDTO[];
   isLoading = false;
 
   constructor(private diagramService: DiagramService) { }

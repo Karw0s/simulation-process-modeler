@@ -4,13 +4,16 @@
   </mat-card-header>
   <div fxLayout="column" fxLayoutAlign="end center" class="content">
     <div fxLayout="row" fxFlex fxLayoutAlign="center center">
-      <img mat-card-image class="diagram-img" src="assets/diagrams_png/{{diagram.image}}" alt="Photo of a Shiba Inu">
+      <img *ngIf="!isLoading" mat-card-image class="diagram-img" [src]="imageToShow" alt="View {{diagram.name}}">
+      <mat-spinner *ngIf="isLoading" diameter="70"></mat-spinner>
+      <ng-template #noImageFound>
+        <img mat-card-image src="" alt="FallbackImage">
+      </ng-template>
     </div>
 
     <div fxLayout="row" fxFlex="25" fxLayoutAlign="space-around start">
-      <button mat-stroked-button color="primary" style="cursor: pointer" routerLink="/modeler/{{diagram.id}}">Open
-      </button>
-      <button mat-stroked-button color="warn" (click)="deleteDiagram(diagram.id)"> Delete</button>
+      <button mat-stroked-button color="primary" routerLink="/modeler/{{diagram.id}}">Edit</button>
+      <button mat-stroked-button color="warn" (click)="deleteDiagram(diagram.id)">Delete</button>
     </div>
   </div>
 </mat-card>

@@ -1,5 +1,10 @@
-<app-tool-bar (toolBarEvent)="toolBarEvent($event)"></app-tool-bar>
+<app-tool-bar [editMode]="true" (toolBarEvent)="toolBarEvent($event)"></app-tool-bar>
 <div fxLayout="row" class="diagram-parent row">
+  <div class="overlay" *ngIf="isLoading">
+    <div class="spinner-wrapper">
+      <mat-spinner></mat-spinner>
+    </div>
+  </div>
   <div #diagramContainer fxFlex="80" id="diagramPanel" class="diagram-container"></div>
   <div #propertiesPanel fxFlex="20" id="propertiesPanel" class="properties-panel"></div>
 </div>

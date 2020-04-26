@@ -1,6 +1,6 @@
 import { AfterContentInit, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
-import { throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+import { catchError, finalize } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -14,6 +14,7 @@ import qsExtension from 'src/assets/gs.json';
 import { CodeDialogComponent } from './code-dialog/code-dialog.component';
 import { getBusinessObject } from 'bpmn-js/lib/util/ModelUtil';
 import { DiagramService } from '../diagram.service';
+import { CanComponentDeactivate } from '../../shared/unsaved-changes.guard';
 
 
 const HIGH_PRIORITY = 1500;
@@ -23,40 +24,20 @@ const HIGH_PRIORITY = 1500;
   templateUrl: './modeler.component.html',
   styleUrls: ['./modeler.component.css'],
 })
-export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
-
-  static initialDiagram =
-    '<?xml version="1.0" encoding="UTF-8"?>' +
-    '<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
-    'xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" ' +
-    'xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" ' +
-    'xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" ' +
-    'targetNamespace="http://bpmn.io/schema/bpmn" ' +
-    'id="Definitions_1">' +
-    '<bpmn:process id="Process_1" isExecutable="false">' +
-    '<bpmn:startEvent id="StartEvent_1"/>' +
-    '</bpmn:process>' +
-    '<bpmndi:BPMNDiagram id="BPMNDiagram_1">' +
-    '<bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">' +
-    '<bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">' +
-    '<dc:Bounds height="36.0" width="36.0" x="173.0" y="102.0"/>' +
-    '</bpmndi:BPMNShape>' +
-    '</bpmndi:BPMNPlane>' +
-    '</bpmndi:BPMNDiagram>' +
-    '</bpmn:definitions>';
+export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, CanComponentDeactivate {
 
   @Output() private importDone: EventEmitter<any> = new EventEmitter();
   @Input() private url: string;
   @ViewChild('diagramContainer', {static: true}) private el: ElementRef;
   @ViewChild('propertiesPanel', {static: true}) private pp: ElementRef;
   private bpmnJS: any;
-  private id: string;
-  private editMode = false;
+  private id: number;
   private dialogRef;
   private code: any;
   private diagramElement;
-  private eeeee: any;
-  private toolbarActions: any;
+  // private toolbarActions: any;
+  isLoading = false;
+  private unsavedChanges = false;
 
   constructor(private diagramService: DiagramService,
               private http: HttpClient,
@@ -66,7 +47,6 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
   }
 
   ngOnInit(): void {
-    console.log('init');
     this.bpmnJS = new Modeler({
         additionalModules: [
           PropertiesPanelModule,
@@ -106,7 +86,6 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
       const modeling = this.bpmnJS.get('modeling');
 
       if (event.element.businessObject.$type === 'bpmn:ScriptTask') {
-        this.eeeee = event;
         const businessObject = getBusinessObject(event.element);
         this.diagramElement = event.element;
 
@@ -162,26 +141,30 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
 
   ngAfterContentInit(): void {
 
+    this.isLoading = true;
+
     this.bpmnJS.attachTo(this.el.nativeElement);
     this.bpmnJS.get('propertiesPanel').attachTo(this.pp.nativeElement);
 
     this.route.paramMap.subscribe((params) => {
-      this.id = params.get('id');
+      this.id = +params.get('id');
 
-      if (this.id != null) {
+      if (!isNaN(this.id) && params.get('id') != null) {
         this.diagramService.getDiagram(this.id)
+          .pipe(finalize(
+            () => this.isLoading = false
+          ))
           .subscribe(
-            diagramXML => {
-              this.bpmnJS.importXML(diagramXML);
+            diagram => {
+              this.bpmnJS.importXML(diagram.diagramXML);
+            },
+            error => {
+              console.log(`can't load diagram ${this.id}`);
             }
           );
-      }
-
-      this.editMode = params.get('id') != null;
-      const url: string = this.router.url;
-
-      if (!this.editMode || url.match('/new')) {
-        this.bpmnJS.importXML(ModelerComponent.initialDiagram);
+      } else {
+        this.bpmnJS.createDiagram();
+        this.isLoading = false;
       }
       //   this.loadUrl('https://cdn.staticaly.com/gh/bpmn-io/bpmn-js-examples/dfceecba/starter/diagram.bpmn');
     });
@@ -190,6 +173,10 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
 
   ngOnDestroy(): void {
     this.bpmnJS.destroy();
+  }
+
+  canDeactivate(): Observable<boolean> | Promise<boolean> | boolean {
+    return !this.unsavedChanges;
   }
 
   loadUrl(url: string) {
@@ -216,6 +203,7 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
   }
 
   toolBarEvent(action: string) {
+    console.log(`Modeler received ${action} from toolbar.`);
     switch (action) {
       case 'undo':
         this.trigger_undo();
@@ -225,13 +213,20 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit {
         break;
       case 'save':
         this.save();
+        this.unsavedChanges = false;
         break;
-      case 'new diagram':
+      case 'save_to_server':
+        this.diagramService.saveDiagram(this.bpmnJS.saveXML({format: true}, (err, xml) => {
+          this.unsavedChanges = false;
+          return xml;
+        }));
+        break;
+      case 'new_diagram':
         this.router.navigate(['/modeler/new']);
         break;
-      // case 'load':
-      //   this.bpmnJS.importXML(this.diagramService.getDiagram().diagram);
-      //   break;
+      case 'load':
+        this.bpmnJS.importXML(this.diagramService.getDiagramFromFile().diagram);
+        break;
       case 'download_img':
         this.downloadImg();
         break;

@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { DiagramStruct } from '../models/DiagramStruct';
+import { DiagramDetailsDTO } from '../models/diagram-details-dto';
+import { DiagramDTO } from '../models/diagram-dto';
 
-interface DiagramStructfileNameADiagram {
+interface DiagramStructFileNameADiagram {
   fileName: string;
   diagram: string | ArrayBuffer;
 }
@@ -14,24 +14,31 @@ interface DiagramStructfileNameADiagram {
 })
 export class DiagramService {
 
-  diagram: DiagramStructfileNameADiagram;
+  diagram: DiagramStructFileNameADiagram;
   apiEndpoint = environment.apiServer + '/diagrams';
 
   constructor(private httpClient: HttpClient) { }
 
-  setDiagram(file: DiagramStructfileNameADiagram) {
+  setDiagram(file: DiagramStructFileNameADiagram) {
+    console.log(file.diagram);
     this.diagram = file;
   }
 
-  // getDiagram(): DiagramStructfileNameADiagram {
-  //   return this.diagram;
-  // }
+  getDiagramFromFile(): DiagramStructFileNameADiagram {
+    return this.diagram;
+  }
 
   getDiagramsList() {
-    return this.httpClient.get<DiagramStruct[]>(this.apiEndpoint);
+    return this.httpClient.get<DiagramDetailsDTO[]>(this.apiEndpoint);
   }
 
-  getDiagram(id: string) {
-    return this.httpClient.get(`${this.apiEndpoint}/${id}`, {responseType: 'text'});
+  getDiagram(id: number) {
+    return this.httpClient.get<DiagramDTO>(`${this.apiEndpoint}/${id}`);
   }
+
+  getDiagramImage(id: number) {
+    return this.httpClient.get(`${this.apiEndpoint}/${id}/image`, {responseType: 'blob'});
+  }
+
+  saveDiagram(saveXML: any) {}
 }

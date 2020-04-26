@@ -26,6 +26,8 @@ import { DiagramsListItemComponent } from './diagrams-list/diagrams-list-item/di
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ConfirmationDialogComponent } from './shared/confirmation-dialog/confirmation-dialog.component';
+import { UnsavedChangesGuard } from './shared/unsaved-changes.guard';
+
 
 @NgModule({
   declarations: [
@@ -58,7 +60,7 @@ import { ConfirmationDialogComponent } from './shared/confirmation-dialog/confir
     MatCardModule,
     MatProgressSpinnerModule
   ],
-  providers: [],
+  providers: [UnsavedChangesGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
