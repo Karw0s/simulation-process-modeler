@@ -47,7 +47,6 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
   }
 
   ngOnInit(): void {
-    console.log('init');
     this.bpmnJS = new Modeler({
         additionalModules: [
           PropertiesPanelModule,
@@ -156,8 +155,11 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
             () => this.isLoading = false
           ))
           .subscribe(
-            diagramXML => {
-              this.bpmnJS.importXML(diagramXML);
+            diagram => {
+              this.bpmnJS.importXML(diagram.diagramXML);
+            },
+            error => {
+              console.log(`can't load diagram ${this.id}`);
             }
           );
       } else {

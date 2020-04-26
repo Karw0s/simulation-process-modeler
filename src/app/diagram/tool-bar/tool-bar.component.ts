@@ -8,7 +8,7 @@ import { DiagramService } from '../diagram.service';
 })
 export class ToolBarComponent implements OnInit {
 
-  @Input() private editMode: boolean;
+  @Input() editMode: boolean;
   @Output() toolBarEvent = new EventEmitter<string>();
   @Output() file = new EventEmitter<string>();
 
