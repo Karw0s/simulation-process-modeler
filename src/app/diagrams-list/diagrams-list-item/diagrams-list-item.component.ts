@@ -12,7 +12,7 @@ import { finalize } from 'rxjs/operators';
 })
 export class DiagramsListItemComponent implements OnInit {
   @Input() diagram: DiagramDetailsDTO;
-  private imageToShow: any;
+  imageToShow: any;
   isLoading = false;
 
   constructor(public diagramService: DiagramService,
