@@ -100,7 +100,7 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
 
         this.dialogRef.afterClosed().subscribe(result => {
 
-          console.log('dialog result: ' + result);
+          console.log('code dialog result: ' + result);
           if (result) {
             let extensionElements = businessObject.extensionElements;
             if (!extensionElements) {
@@ -121,8 +121,6 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
             this.code = result;
           }
         });
-
-        console.log('dialog');
       }
     });
 

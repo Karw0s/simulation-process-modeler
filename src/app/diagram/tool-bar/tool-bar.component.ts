@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { DiagramService } from '../diagram.service';
+import { SimParameterDialogComponent } from '../sim-parameter-dialog/sim-parameter-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-tool-bar',
@@ -11,8 +13,10 @@ export class ToolBarComponent implements OnInit {
   @Input() editMode: boolean;
   @Output() toolBarEvent = new EventEmitter<string>();
   @Output() file = new EventEmitter<string>();
+  private dialogRef: any;
 
-  constructor(private diagramService: DiagramService) { }
+  constructor(private diagramService: DiagramService,
+              public dialog: MatDialog) { }
 
   ngOnInit(): void {
   }
@@ -30,5 +34,16 @@ export class ToolBarComponent implements OnInit {
       this.toolBarEvent.emit('load');
     };
     fileReader.readAsText(files[0]);
+  }
+
+  openSimParameterDialog() {
+    this.dialogRef = this.dialog.open(SimParameterDialogComponent, {
+      height: '575px',
+      width: '650px',
+    });
+
+    this.dialogRef.afterClosed().subscribe(result => {
+      console.log('result from dialog' + result);
+    });
   }
 }

@@ -1,0 +1,25 @@
+<h1 mat-dialog-title>Simulation Parameters</h1>
+<div mat-dialog-content [formGroup]="simParameterForm">
+  <mat-form-field appearance="legacy">
+    <mat-label>Time of simulation</mat-label>
+    <input matInput type="number" min="1" formControlName="time">
+  </mat-form-field>
+  <br>
+  <mat-form-field appearance="legacy">
+    <mat-label>Simulation unit</mat-label>
+    <mat-select>
+      <mat-option *ngFor="let unit of simUnits" formControlName="unit">
+        {{unit.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <br>
+  <mat-form-field appearance="legacy">
+    <mat-label>Rate of simulation</mat-label>
+    <input matInput type="number" min="1" formControlName="rate">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button (click)="onNoClick()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="save()" [mat-dialog-close]="simParameterForm">Save</button>
+</div>

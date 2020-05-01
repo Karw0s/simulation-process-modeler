@@ -27,6 +27,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ConfirmationDialogComponent } from './shared/confirmation-dialog/confirmation-dialog.component';
 import { UnsavedChangesGuard } from './shared/unsaved-changes.guard';
+import { DiagramModule } from './diagram/diagram.module';
 
 
 @NgModule({
@@ -43,6 +44,7 @@ import { UnsavedChangesGuard } from './shared/unsaved-changes.guard';
     ConfirmationDialogComponent
   ],
   imports: [
+    DiagramModule,
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,

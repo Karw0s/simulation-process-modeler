@@ -40,7 +40,7 @@
   <button mat-icon-button (click)="triggerAction('start_sim')" style="color: forestgreen">
     <mat-icon>play_arrow</mat-icon>
   </button>
-  <button mat-icon-button (click)="triggerAction('sim_parameters')" style="color: black">
+  <button mat-icon-button onclick="this.blur()" (click)="openSimParameterDialog()" style="color: black">
     <mat-icon>settings</mat-icon>
   </button>
 
