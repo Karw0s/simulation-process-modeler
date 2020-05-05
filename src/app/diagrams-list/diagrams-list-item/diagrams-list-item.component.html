@@ -12,7 +12,7 @@
     </div>
 
     <div fxLayout="row" fxFlex="25" fxLayoutAlign="space-around start">
-      <button mat-stroked-button color="primary" routerLink="/modeler/{{diagram.id}}">Edit</button>
+      <button mat-stroked-button color="primary" [routerLink]="['/modeler/', diagram.id]">Edit</button>
       <button mat-stroked-button color="warn" (click)="deleteDiagram(diagram.id)">Delete</button>
     </div>
   </div>

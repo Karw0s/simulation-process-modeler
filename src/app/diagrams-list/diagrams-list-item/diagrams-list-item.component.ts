@@ -33,6 +33,7 @@ export class DiagramsListItemComponent implements OnInit {
       if (result) {
         console.log(`delete confirm for ${this.diagram.id}`);
         // todo: delete diagram
+        this.diagramService.deleteDiagram(this.diagram.id)
       } else {
         console.log(`delete canceled`);
       }

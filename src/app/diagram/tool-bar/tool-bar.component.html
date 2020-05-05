@@ -7,12 +7,12 @@
   <mat-menu #menu="matMenu">
     <button mat-menu-item (click)="triggerAction('new_diagram')">New diagram</button>
     <button mat-menu-item (click)="file.click()">Open file</button>
-    <button mat-menu-item (click)="triggerAction('save')">Download .bpmn file</button>
+    <button mat-menu-item (click)="triggerAction('download_xml')">Download .bpmn file</button>
   </mat-menu>
 
   <mat-divider class="style-fix" [vertical]="true"></mat-divider>
 
-  <button mat-icon-button (click)="triggerAction('save_to_server')">
+  <button mat-icon-button onclick="this.blur()" (click)="triggerAction('save_to_server')">
     <mat-icon>save</mat-icon>
   </button>
 

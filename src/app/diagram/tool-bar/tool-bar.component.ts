@@ -30,8 +30,8 @@ export class ToolBarComponent implements OnInit {
     const fileReader = new FileReader();
     fileReader.onload = (e) => {
       console.log(fileReader.result);
-      this.diagramService.setDiagram({fileName: files[0].name, diagram: fileReader.result});
-      this.toolBarEvent.emit('load');
+      this.diagramService.setDiagramFromFile({fileName: files[0].name, diagram: fileReader.result});
+      this.toolBarEvent.emit('open_diagram_file');
     };
     fileReader.readAsText(files[0]);
   }
