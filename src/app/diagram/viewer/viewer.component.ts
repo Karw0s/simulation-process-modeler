@@ -3,11 +3,12 @@ import { AfterContentInit, Component, ElementRef, EventEmitter, OnDestroy, OnIni
 import * as Viewer from 'bpmn-js/dist/bpmn-navigated-viewer.development.js';
 // @ts-ignore
 import qsExtension from '../../../assets/gs.json';
-import { catchError } from 'rxjs/operators';
+import { catchError, finalize } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { importDiagram } from '../modeler/rx';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
+import { DiagramService } from '../diagram.service';
 
 @Component({
   selector: 'app-viewer',
@@ -20,8 +21,11 @@ export class ViewerComponent implements OnInit, OnDestroy, AfterContentInit {
   @ViewChild('propertiesPanel', {static: true}) private pp: ElementRef;
   @Output() private importDone: EventEmitter<any> = new EventEmitter();
   private viewer: any;
+  private diagramId: number;
+  private isLoading: boolean;
 
-  constructor(private http: HttpClient,
+  constructor(private diagramService: DiagramService,
+              private http: HttpClient,
               private router: Router,
               private route: ActivatedRoute) {}
 
@@ -51,8 +55,31 @@ export class ViewerComponent implements OnInit, OnDestroy, AfterContentInit {
   ngAfterContentInit(): void {
     this.viewer.attachTo(this.el.nativeElement);
     // this.viewer.get('propertiesPanel').attachTo(this.pp.nativeElement);
+    this.isLoading = true;
 
-    this.loadUrl('https://cdn.staticaly.com/gh/bpmn-io/bpmn-js-examples/dfceecba/starter/diagram.bpmn');
+    this.route.paramMap.subscribe((params) => {
+      this.diagramId = +params.get('id');
+
+      if (!isNaN(this.diagramId) && params.get('id') != null) {
+        this.diagramService.getDiagram(this.diagramId)
+          .pipe(finalize(
+            () => this.isLoading = false
+          ))
+          .subscribe(
+            diagram => {
+              this.viewer.importXML(diagram.diagramXML);
+              // this.isNewDiagram = false;
+            },
+            error => {
+              console.log(`can't load diagram ${this.diagramId}`);
+            }
+          );
+      } else {
+        this.loadUrl('https://cdn.staticaly.com/gh/bpmn-io/bpmn-js-examples/dfceecba/starter/diagram.bpmn');
+        this.isLoading = false;
+        // this.isNewDiagram = true;
+      }
+    });
   }
 
 
@@ -88,20 +115,20 @@ export class ViewerComponent implements OnInit, OnDestroy, AfterContentInit {
       case 'new_diagram':
         this.router.navigate(['/modeler/new']);
         break;
-      case 'save':
+      case 'open_diagram_file':
+        console.log('open_diagram_file');
+        break;
+      case 'download_xml':
         console.log('saving to .bpmn file');
         break;
       case 'download_img':
         console.log('downloading image');
         break;
-      case 'stop_sim':
-        console.log('stop_sim');
-        break;
       case 'start_sim':
         console.log('start_sim');
         break;
-      case 'sim_parameters':
-        console.log('sim_parameters');
+      case 'stop_sim':
+        console.log('stop_sim');
         break;
     }
   }

@@ -7,12 +7,12 @@
   <mat-menu #menu="matMenu">
     <button mat-menu-item (click)="triggerAction('new_diagram')">New diagram</button>
     <button mat-menu-item (click)="file.click()">Open file</button>
-    <button mat-menu-item (click)="triggerAction('save')">Download .bpmn file</button>
+    <button mat-menu-item (click)="triggerAction('download_xml')">Download .bpmn file</button>
   </mat-menu>
 
   <mat-divider class="style-fix" [vertical]="true"></mat-divider>
 
-  <button mat-icon-button (click)="triggerAction('save_to_server')">
+  <button mat-icon-button onclick="this.blur()" (click)="triggerAction('save_to_server')">
     <mat-icon>save</mat-icon>
   </button>
 
@@ -40,7 +40,7 @@
   <button mat-icon-button (click)="triggerAction('start_sim')" style="color: forestgreen">
     <mat-icon>play_arrow</mat-icon>
   </button>
-  <button mat-icon-button (click)="triggerAction('sim_parameters')" style="color: black">
+  <button mat-icon-button onclick="this.blur()" (click)="openSimParameterDialog()" style="color: black">
     <mat-icon>settings</mat-icon>
   </button>
 

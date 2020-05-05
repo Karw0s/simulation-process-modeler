@@ -5,6 +5,11 @@ button {
   height: calc(100% - 32px);
 }
 .diagram-img {
+  display: block;
+  max-height: 120px;
+  max-width: 200px;
+  width: auto;
+  height: auto;
   margin-bottom: 10px;
 }
 

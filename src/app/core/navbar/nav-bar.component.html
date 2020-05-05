@@ -2,7 +2,7 @@
   <span>Simulation Process Modeler</span>
   <div class="toolbar-buttons">
     <a mat-button routerLink="/">Home</a>
-    <a mat-button routerLink="/modeler">Modeler</a>
-    <a mat-button routerLink="/viewer">Viewer</a>
+    <a mat-button (click)="goTo('modeler')">Modeler</a>
+    <a mat-button (click)="goTo('viewer')">Viewer</a>
   </div>
 </mat-toolbar>

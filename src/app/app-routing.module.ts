@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ModelerComponent } from './diagram/modeler/modeler.component';
-import { HomeComponent } from './home/home.component';
+import { HomeComponent } from './core/home/home.component';
 import { ViewerComponent } from './diagram/viewer/viewer.component';
 import { UnsavedChangesGuard } from './shared/unsaved-changes.guard';
 
