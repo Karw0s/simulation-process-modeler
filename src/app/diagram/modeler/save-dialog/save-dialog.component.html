@@ -1,0 +1,14 @@
+<h1 mat-dialog-title>Save Your Diagram</h1>
+<div mat-dialog-content>
+  <div fxFill>
+    <mat-form-field appearance="legacy">
+      <mat-label>Diagram Name</mat-label>
+      <input matInput type="text" [(ngModel)]="data.name">
+    </mat-form-field>
+  </div>
+</div>
+<div fxLayout="row" fxLayoutAlign="end" mat-dialog-actions>
+  <button mat-raised-button color="warn" (click)="onNoClick()">Cancel</button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="data.name" cdkFocusInitial>Apply</button>
+</div>
+

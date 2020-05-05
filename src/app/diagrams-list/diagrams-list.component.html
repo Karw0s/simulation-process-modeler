@@ -1,0 +1,16 @@
+<mat-card class="diagram-list-card">
+  <mat-card-header>
+    <mat-card-title>Diagram list:</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+
+    <div *ngIf="!isLoading" fxFlexFill fxLayoutGap="10px grid" style="flex-flow: row wrap; display: flex">
+      <app-diagrams-list-item
+        *ngFor="let diagram of diagrams"
+        [diagram]="diagram">
+      </app-diagrams-list-item>
+    </div>
+    <mat-spinner *ngIf="isLoading"></mat-spinner>
+  </mat-card-content>
+</mat-card>
+

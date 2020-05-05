@@ -1,5 +1,7 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { DiagramService } from '../diagram.service';
+import { SimParameterDialogComponent } from '../sim-parameter-dialog/sim-parameter-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-tool-bar',
@@ -8,10 +10,13 @@ import { DiagramService } from '../diagram.service';
 })
 export class ToolBarComponent implements OnInit {
 
+  @Input() editMode: boolean;
   @Output() toolBarEvent = new EventEmitter<string>();
   @Output() file = new EventEmitter<string>();
+  private dialogRef: any;
 
-  constructor(private diagramService: DiagramService) { }
+  constructor(private diagramService: DiagramService,
+              public dialog: MatDialog) { }
 
   ngOnInit(): void {
   }
@@ -25,9 +30,20 @@ export class ToolBarComponent implements OnInit {
     const fileReader = new FileReader();
     fileReader.onload = (e) => {
       console.log(fileReader.result);
-      this.diagramService.setDiagram({fileName: files[0].name, diagram: fileReader.result});
-      this.toolBarEvent.emit('load');
+      this.diagramService.setDiagramFromFile({fileName: files[0].name, diagram: fileReader.result});
+      this.toolBarEvent.emit('open_diagram_file');
     };
     fileReader.readAsText(files[0]);
+  }
+
+  openSimParameterDialog() {
+    this.dialogRef = this.dialog.open(SimParameterDialogComponent, {
+      height: '575px',
+      width: '650px',
+    });
+
+    this.dialogRef.afterClosed().subscribe(result => {
+      console.log('result from dialog' + result);
+    });
   }
 }

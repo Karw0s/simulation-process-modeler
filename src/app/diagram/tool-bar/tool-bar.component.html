@@ -5,28 +5,45 @@
   </button>
 
   <mat-menu #menu="matMenu">
-    <button mat-menu-item (click)="triggerAction('new diagram')">New diagram</button>
-    <button mat-menu-item (click)="triggerAction('open file')">Open file</button>
+    <button mat-menu-item (click)="triggerAction('new_diagram')">New diagram</button>
+    <button mat-menu-item (click)="file.click()">Open file</button>
+    <button mat-menu-item (click)="triggerAction('download_xml')">Download .bpmn file</button>
   </mat-menu>
 
   <mat-divider class="style-fix" [vertical]="true"></mat-divider>
 
-  <button mat-icon-button (click)="triggerAction('save')">
+  <button mat-icon-button onclick="this.blur()" (click)="triggerAction('save_to_server')">
     <mat-icon>save</mat-icon>
   </button>
 
   <mat-divider class="style-fix" [vertical]="true"></mat-divider>
 
-  <button mat-icon-button (click)="triggerAction('undo')">
+  <button mat-icon-button [disabled]="!editMode" (click)="triggerAction('undo')">
     <mat-icon class="rotate-270">replay</mat-icon>
   </button>
 
-  <button mat-icon-button (click)="triggerAction('redo')">
+  <button mat-icon-button [disabled]="!editMode" (click)="triggerAction('redo')">
     <mat-icon class="mirror">replay</mat-icon>
   </button>
-  <button mat-icon-button (click)="file.click()">
-    <mat-icon>attach_file</mat-icon>
+
+  <mat-divider class="style-fix" [vertical]="true"></mat-divider>
+
+  <button mat-icon-button (click)="triggerAction('download_img')">
+    <mat-icon fontSet="material-icons-outlined">image</mat-icon>
   </button>
+
+  <mat-divider class="style-fix" [vertical]="true"></mat-divider>
+
+  <button mat-icon-button (click)="triggerAction('stop_sim')" style="color: darkred">
+    <mat-icon>stop</mat-icon>
+  </button>
+  <button mat-icon-button (click)="triggerAction('start_sim')" style="color: forestgreen">
+    <mat-icon>play_arrow</mat-icon>
+  </button>
+  <button mat-icon-button onclick="this.blur()" (click)="openSimParameterDialog()" style="color: black">
+    <mat-icon>settings</mat-icon>
+  </button>
+
 </mat-toolbar>
 
-<input #file hidden type="file" accept="text/xml" (change)="openFile(file.files)">
+<input #file hidden type="file" accept=".bpmn" (change)="openFile(file.files)">
