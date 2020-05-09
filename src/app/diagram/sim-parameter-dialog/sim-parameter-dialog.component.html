@@ -1,4 +1,31 @@
 <h1 mat-dialog-title>Simulation Parameters</h1>
+
+<mat-form-field appearance="legacy" *ngIf="!newPropSet">
+  <mat-label>Name</mat-label>
+  <mat-select [(value)]="selectedSimPropId" (selectionChange)="change(selectedSimPropId)">
+    <mat-option *ngFor="let simProp of simProps" [value]="simProp.id">
+      {{simProp.name}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
+<mat-form-field appearance="legacy" *ngIf="newPropSet">
+  <mat-label>Name</mat-label>
+  <input matInput type="text" [(ngModel)]="namePropSet" required>
+</mat-form-field>
+
+<button mat-icon-button
+        matTooltip="Create New"
+        color="primary"
+        onclick="this.blur()"
+        (click)="prepareNewPropForm()">
+  <mat-icon>add</mat-icon>
+</button>
+<button mat-icon-button onclick="this.blur()" style="color: black" (click)="deletePropSet()">
+  <mat-icon>delete_forever</mat-icon>
+</button>
+
+
 <div mat-dialog-content [formGroup]="simParameterForm">
   <mat-form-field appearance="legacy">
     <mat-label>Time of simulation</mat-label>
@@ -7,8 +34,10 @@
   <br>
   <mat-form-field appearance="legacy">
     <mat-label>Simulation unit</mat-label>
-    <mat-select>
-      <mat-option *ngFor="let unit of simUnits" formControlName="unit">
+    <mat-select formControlName="unit">
+      <!--      [value]="selectedUnit">-->
+<!--      <mat-option>-New-</mat-option>-->
+      <mat-option *ngFor="let unit of simUnits" [value]="unit.value">
         {{unit.name}}
       </mat-option>
     </mat-select>
@@ -21,5 +50,5 @@
 </div>
 <div mat-dialog-actions>
   <button mat-raised-button (click)="onNoClick()">Cancel</button>
-  <button mat-raised-button color="primary" (click)="save()" [mat-dialog-close]="simParameterForm">Save</button>
+  <button mat-raised-button color="primary" (click)="save()" [mat-dialog-close]="simParameterForm">Apply</button>
 </div>

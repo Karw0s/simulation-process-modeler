@@ -1,8 +1,8 @@
 import { EventEmitter, Injectable, Output } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { DiagramDetailsDTO } from '../models/diagram-details-dto';
-import { DiagramDTO } from '../models/diagram-dto';
+import { DiagramDetailsDTO } from '../models/dto/diagram-details-dto';
+import { DiagramDTO } from '../models/dto/diagram-dto';
 import { tap } from 'rxjs/operators';
 import { Diagram } from '../models/diagram';
 
