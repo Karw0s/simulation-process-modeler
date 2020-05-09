@@ -25,7 +25,7 @@ export class SimulationPropertiesService {
   }
 
   updateSimulationProperties(id: number, simProperties: Simulation) {
-    return this.httpClient.post(`${environment.apiServer}/simProperties/${id}`, simProperties);
+    return this.httpClient.put(`${environment.apiServer}/simProperties/${id}`, simProperties);
   }
 
   deleteSimulationProperties(id: number) {

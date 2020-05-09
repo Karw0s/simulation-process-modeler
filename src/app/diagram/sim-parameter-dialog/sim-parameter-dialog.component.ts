@@ -30,8 +30,7 @@ export class SimParameterDialogComponent implements OnInit {
   selectedSimPropId;
   private isLoading: boolean;
   selectedSimProp: SimulationParametersDTO;
-  selectedUnit: any = this.simUnits[0].value;
-  newPropSet: any = false;
+  isNewPropSet = false;
   namePropSet: any;
 
   constructor(public dialogRef: MatDialogRef<SimParameterDialogComponent>,
@@ -67,7 +66,7 @@ export class SimParameterDialogComponent implements OnInit {
           );
         });
     } else {
-      this.newPropSet = true;
+      this.isNewPropSet = true;
     }
   }
 
@@ -77,25 +76,46 @@ export class SimParameterDialogComponent implements OnInit {
   }
 
   save() {
-    console.log('Saved ' + this.simParameterForm.value);
+    console.log('Saved');
     console.log(this.simParameterForm.value);
+
+    if (this.isNewPropSet) {
+      this.simPropService.createSimulationProperties(this.diagramService.getLoadedDiagramId(), this.simParameterForm.value)
+        .subscribe(
+          result => {
+            console.log(result);
+          }
+        );
+    } else {
+      this.simPropService.updateSimulationProperties(this.selectedSimPropId, this.simParameterForm.value).subscribe(
+        result => {
+          console.log(result);
+        }
+      );
+    }
   }
 
-  change(id: any) {
-    // this.simParameterForm
+  change(id: number) {
     console.log('change id: ' + id);
-    this.simPropService.getSimulationProperties(id).subscribe(
-      prop => {
-        this.selectedSimProp = prop;
-        this.selectedSimPropId = this.selectedSimProp.id;
-        this.updateFormValues(this.selectedSimProp);
+    if (+id !== -1) {
+      this.isNewPropSet = false;
+      this.simPropService.getSimulationProperties(id).subscribe(
+        prop => {
+          this.selectedSimProp = prop;
+          this.selectedSimPropId = this.selectedSimProp.id;
+          this.updateFormValues(this.selectedSimProp);
+        });
+    } else {
+      if (!this.isNewPropSet) {
+        this.isNewPropSet = !this.isNewPropSet;
       }
-    );
-  }
-
-  prepareNewPropForm() {
-    // clear from for new
-    this.newPropSet = !this.newPropSet;
+      this.simParameterForm.patchValue({
+        name: null,
+        time: null,
+        unit: this.simUnits[0].value,
+        rate: null
+      });
+    }
   }
 
   deletePropSet() {

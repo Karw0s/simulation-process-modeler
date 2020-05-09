@@ -38,8 +38,8 @@ export class ToolBarComponent implements OnInit {
 
   openSimParameterDialog() {
     this.dialogRef = this.dialog.open(SimParameterDialogComponent, {
-      height: '575px',
-      width: '650px',
+      height: '500px',
+      width: '350px',
     });
 
     this.dialogRef.afterClosed().subscribe(result => {
