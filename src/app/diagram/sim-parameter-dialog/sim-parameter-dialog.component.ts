@@ -87,7 +87,8 @@ export class SimParameterDialogComponent implements OnInit {
           }
         );
     } else {
-      this.simPropService.updateSimulationProperties(this.selectedSimPropId, this.simParameterForm.value).subscribe(
+      this.simPropService.updateSimulationProperties(this.selectedSimPropId, this.simParameterForm.value)
+        .subscribe(
         result => {
           console.log(result);
         }

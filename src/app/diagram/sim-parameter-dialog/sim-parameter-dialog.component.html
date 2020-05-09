@@ -4,30 +4,30 @@
   <mat-form-field appearance="legacy">
     <mat-label>Name</mat-label>
     <mat-select [(value)]="selectedSimPropId" (selectionChange)="change(selectedSimPropId)">
-      <mat-option value="-1">-New-</mat-option>
+      <mat-option value="-1">--New--</mat-option>
       <mat-option *ngFor="let simProp of simProps" [value]="simProp.id">
         {{simProp.name}}
       </mat-option>
     </mat-select>
   </mat-form-field>
 
-<!--    <button mat-icon-button-->
-<!--            matTooltip="Create New"-->
-<!--            color="primary"-->
-<!--            onclick="this.blur()"-->
-<!--            (click)="editMode()">-->
-<!--      <mat-icon>edit</mat-icon>-->
-<!--    </button>-->
+  <!--    <button mat-icon-button-->
+  <!--            matTooltip="Create New"-->
+  <!--            color="primary"-->
+  <!--            onclick="this.blur()"-->
+  <!--            (click)="editMode()">-->
+  <!--      <mat-icon>edit</mat-icon>-->
+  <!--    </button>-->
   <button mat-icon-button
           onclick="this.blur()"
-          style="color: black"
+          [disabled]="isNewPropSet"
+
           (click)="deletePropSet()">
     <mat-icon>delete_forever</mat-icon>
   </button>
 </div>
 
-<div mat-dialog-content [formGroup]="simParameterForm">
-
+<div [formGroup]="simParameterForm">
   <mat-form-field appearance="legacy" *ngIf="isNewPropSet">
     <mat-label>Name</mat-label>
     <input matInput
@@ -57,11 +57,12 @@
 </div>
 
 
-<div mat-dialog-actions>
+<div mat-dialog-actions fxLayout="row" fxLayoutAlign="end">
   <button mat-raised-button (click)="onNoClick()">Cancel</button>
   <button mat-raised-button
           color="primary"
           (click)="save()"
           [mat-dialog-close]="simParameterForm.value"
-          [disabled]="!simParameterForm.valid">Apply</button>
+          [disabled]="!simParameterForm.valid">Apply
+  </button>
 </div>
