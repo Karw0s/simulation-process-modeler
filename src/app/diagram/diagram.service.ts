@@ -19,6 +19,7 @@ export class DiagramService {
   @Output() deletedDiagram: EventEmitter<number> = new EventEmitter();
   currentDiagram: Diagram;
   apiEndpoint = environment.apiServer + '/diagrams';
+  private currentSimParams: number;
 
   constructor(private httpClient: HttpClient) { }
 
@@ -37,6 +38,7 @@ export class DiagramService {
   getLoadedDiagram() { return this.currentDiagram; }
 
   setDiagram(diagram: Diagram) { this.currentDiagram = diagram;}
+
   /* API */
 
   getDiagramsList() {
@@ -82,5 +84,9 @@ export class DiagramService {
       console.log('deleted');
       this.deletedDiagram.emit(diagramId);
     });
+  }
+
+  setCurrentSimParams(simParamId: number) {
+    this.currentSimParams = simParamId;
   }
 }

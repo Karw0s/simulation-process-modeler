@@ -91,6 +91,7 @@ export class SimParameterDialogComponent implements OnInit {
         .subscribe(
         result => {
           console.log(result);
+          this.dialogRef.close(result.id);
         }
       );
     }

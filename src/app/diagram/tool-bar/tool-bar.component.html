@@ -34,10 +34,10 @@
 
   <mat-divider class="style-fix" [vertical]="true"></mat-divider>
 
-  <button mat-icon-button (click)="triggerAction('stop_sim')" style="color: darkred">
+  <button mat-icon-button (click)="stopSimulation()" style="color: darkred">
     <mat-icon>stop</mat-icon>
   </button>
-  <button mat-icon-button (click)="triggerAction('start_sim')" style="color: forestgreen">
+  <button mat-icon-button (click)="startSimulation()" style="color: forestgreen">
     <mat-icon>play_arrow</mat-icon>
   </button>
   <button mat-icon-button onclick="this.blur()" (click)="openSimParameterDialog()" style="color: black">

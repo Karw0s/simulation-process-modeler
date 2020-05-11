@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { DiagramService } from '../diagram.service';
 import { SimParameterDialogComponent } from '../sim-parameter-dialog/sim-parameter-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-tool-bar',
@@ -16,13 +17,30 @@ export class ToolBarComponent implements OnInit {
   private dialogRef: any;
 
   constructor(private diagramService: DiagramService,
-              public dialog: MatDialog) { }
+              public dialog: MatDialog,
+              private snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
   }
 
   triggerAction(action: string) {
     this.toolBarEvent.emit(action);
+  }
+
+  stopSimulation() {
+    this.snackBar.open('Simulation stopped', undefined, {
+      duration: 2000,
+      verticalPosition: 'top',
+      horizontalPosition: 'end'
+    });
+  }
+
+  startSimulation() {
+    this.snackBar.open('Simulation started', undefined, {
+      duration: 2000,
+      verticalPosition: 'top',
+      horizontalPosition: 'end'
+    });
   }
 
   openFile(files: FileList) {
@@ -43,6 +61,7 @@ export class ToolBarComponent implements OnInit {
     });
 
     this.dialogRef.afterClosed().subscribe(result => {
+      this.diagramService.setCurrentSimParams(result);
       console.log('result from dialog' + result);
     });
   }

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Simulation } from '../models/simulation';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { SimulationParametersListItemDTO } from '../models/dto/simulation-parameters-list-item-dto';
 import { environment } from '../../environments/environment';
 import { SimulationParametersDTO } from '../models/dto/simulation-parameters-dto';
@@ -9,27 +8,32 @@ import { SimulationParametersDTO } from '../models/dto/simulation-parameters-dto
   providedIn: 'root'
 })
 export class SimulationPropertiesService {
+  private apiEndpoint = environment.apiServer + '/simProperties';
 
   constructor(private httpClient: HttpClient) { }
 
   getDiagramSimulationProperties(diagramId: number) {
-    return this.httpClient.get<SimulationParametersListItemDTO[]>(`${environment.apiServer}/diagrams/${diagramId}/simProperties`);
+    const params = new HttpParams()
+      .set('diagramId', String(diagramId));
+    return this.httpClient.get<SimulationParametersListItemDTO[]>(`${this.apiEndpoint}`, {params});
   }
 
   getSimulationProperties(id: number) {
-    return this.httpClient.get<SimulationParametersDTO>(`${environment.apiServer}/simProperties/${id}`);
+    return this.httpClient.get<SimulationParametersDTO>(`${this.apiEndpoint}/${id}`);
   }
 
-  createSimulationProperties(diagramId: number, simProperties: Simulation) {
-    return this.httpClient.post(`${environment.apiServer}/diagrams/${diagramId}/simProperties`, simProperties);
+  createSimulationProperties(diagramId: number, simProperties: SimulationParametersDTO) {
+    const params = new HttpParams()
+      .set('diagramId', String(diagramId));
+    return this.httpClient.post<SimulationParametersDTO>(`${this.apiEndpoint}`, simProperties, {params});
   }
 
-  updateSimulationProperties(id: number, simProperties: Simulation) {
-    return this.httpClient.put(`${environment.apiServer}/simProperties/${id}`, simProperties);
+  updateSimulationProperties(id: number, simProperties: SimulationParametersDTO) {
+    return this.httpClient.put<SimulationParametersDTO>(`${this.apiEndpoint}/${id}`, simProperties);
   }
 
   deleteSimulationProperties(id: number) {
-    this.httpClient.delete(`${environment.apiServer}/simProperties/${id}`).subscribe();
+    this.httpClient.delete(`${this.apiEndpoint}/${id}`).subscribe();
   }
 
 }
