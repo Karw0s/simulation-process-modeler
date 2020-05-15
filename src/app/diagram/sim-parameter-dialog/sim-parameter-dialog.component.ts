@@ -28,7 +28,7 @@ export class SimParameterDialogComponent implements OnInit {
   simParameterForm: FormGroup;
   simProps: SimulationParametersListItemDTO[];
   selectedSimPropId;
-  private isLoading: boolean;
+  isLoading: boolean;
   selectedSimProp: SimulationParametersDTO;
   isNewPropSet = false;
   namePropSet: any;
@@ -57,7 +57,12 @@ export class SimParameterDialogComponent implements OnInit {
         ))
         .subscribe(response => {
           this.simProps = response;
-          this.selectedSimPropId = this.simProps[0].id;
+          if (this.diagramService.getCurrentSimParams()) {
+            this.selectedSimPropId = this.diagramService.getCurrentSimParams();
+          } else {
+
+            this.selectedSimPropId = this.simProps[0].id;
+          }
           this.simPropService.getSimulationProperties(this.simProps[0].id).subscribe(
             prop => {
               this.selectedSimProp = prop;
@@ -84,16 +89,18 @@ export class SimParameterDialogComponent implements OnInit {
         .subscribe(
           result => {
             console.log(result);
+            this.dialogRef.close(result.id);
           }
         );
     } else {
       this.simPropService.updateSimulationProperties(this.selectedSimPropId, this.simParameterForm.value)
         .subscribe(
-        result => {
-          console.log(result);
-          this.dialogRef.close(result.id);
-        }
-      );
+          result => {
+            console.log(result);
+            this.diagramService.setCurrentSimParams(result.id);
+            this.dialogRef.close(result.id);
+          }
+        );
     }
   }
 
@@ -101,12 +108,17 @@ export class SimParameterDialogComponent implements OnInit {
     console.log('change id: ' + id);
     if (+id !== -1) {
       this.isNewPropSet = false;
-      this.simPropService.getSimulationProperties(id).subscribe(
-        prop => {
-          this.selectedSimProp = prop;
-          this.selectedSimPropId = this.selectedSimProp.id;
-          this.updateFormValues(this.selectedSimProp);
-        });
+      this.isLoading = true;
+      this.simPropService.getSimulationProperties(id)
+        .pipe(finalize(
+          () => this.isLoading = false
+        ))
+        .subscribe(
+          prop => {
+            this.selectedSimProp = prop;
+            this.selectedSimPropId = this.selectedSimProp.id;
+            this.updateFormValues(this.selectedSimProp);
+          });
     } else {
       if (!this.isNewPropSet) {
         this.isNewPropSet = !this.isNewPropSet;

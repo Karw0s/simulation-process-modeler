@@ -27,7 +27,7 @@
   </button>
 </div>
 
-<div [formGroup]="simParameterForm">
+<div [formGroup]="simParameterForm" *ngIf="!isLoading">
   <mat-form-field appearance="legacy" *ngIf="isNewPropSet">
     <mat-label>Name</mat-label>
     <input matInput
@@ -55,6 +55,8 @@
     <input matInput type="number" min="1" formControlName="rate">
   </mat-form-field>
 </div>
+
+<mat-spinner *ngIf="isLoading" diameter="70" fxLayoutAlign="center"></mat-spinner>
 
 
 <div mat-dialog-actions fxLayout="row" fxLayoutAlign="end">

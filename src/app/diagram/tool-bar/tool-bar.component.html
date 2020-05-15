@@ -7,6 +7,7 @@
   <mat-menu #menu="matMenu">
     <button mat-menu-item (click)="triggerAction('new_diagram')">New diagram</button>
     <button mat-menu-item (click)="file.click()">Open file</button>
+    <button mat-menu-item (click)="triggerAction('save_as')">Save as...</button>
     <button mat-menu-item (click)="triggerAction('download_xml')">Download .bpmn file</button>
   </mat-menu>
 
@@ -36,6 +37,9 @@
 
   <button mat-icon-button (click)="stopSimulation()" style="color: darkred">
     <mat-icon>stop</mat-icon>
+  </button>
+  <button mat-icon-button (click)="pauseSimulation()" style="color: grey">
+    <mat-icon>pause</mat-icon>
   </button>
   <button mat-icon-button (click)="startSimulation()" style="color: forestgreen">
     <mat-icon>play_arrow</mat-icon>

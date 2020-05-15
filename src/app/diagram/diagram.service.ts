@@ -89,4 +89,8 @@ export class DiagramService {
   setCurrentSimParams(simParamId: number) {
     this.currentSimParams = simParamId;
   }
+
+  getCurrentSimParams() {
+    return this.currentSimParams;
+  }
 }

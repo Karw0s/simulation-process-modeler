@@ -35,8 +35,16 @@ export class ToolBarComponent implements OnInit {
     });
   }
 
+  pauseSimulation() {
+    this.snackBar.open('Simulation paused', undefined, {
+      duration: 2000,
+      verticalPosition: 'top',
+      horizontalPosition: 'end'
+    });
+  }
+
   startSimulation() {
-    this.snackBar.open('Simulation started', undefined, {
+    this.snackBar.open(`Simulation started, \n parameters id ${this.diagramService.getCurrentSimParams()}`, undefined, {
       duration: 2000,
       verticalPosition: 'top',
       horizontalPosition: 'end'
@@ -57,6 +65,7 @@ export class ToolBarComponent implements OnInit {
   openSimParameterDialog() {
     this.dialogRef = this.dialog.open(SimParameterDialogComponent, {
       // height: '500px',
+      minHeight: '400px',
       width: '350px',
     });
 
