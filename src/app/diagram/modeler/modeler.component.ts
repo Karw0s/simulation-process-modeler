@@ -211,6 +211,10 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
         this.bpmnJS.importXML(this.diagramService.getLoadedDiagramXml());
         this.isNewDiagram = true;
         break;
+      case 'save_as_new':
+        this.isNewDiagram = true;
+        this.saveDiagram();
+        break;
       case 'undo':
         this.triggerBPMNJSEditorAction('undo');
         break;

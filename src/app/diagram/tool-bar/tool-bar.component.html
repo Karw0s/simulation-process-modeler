@@ -4,16 +4,25 @@
     <mat-icon>arrow_drop_down</mat-icon>
   </button>
 
-  <mat-menu #menu="matMenu">
+  <mat-menu #menu="matMenu" yPosition="below">
     <button mat-menu-item (click)="triggerAction('new_diagram')">New diagram</button>
+    <button mat-menu-item (click)="triggerAction('rename')">Rename diagram</button>
     <button mat-menu-item (click)="file.click()">Open file</button>
-    <button mat-menu-item (click)="triggerAction('save_as')">Save as...</button>
-    <button mat-menu-item (click)="triggerAction('download_xml')">Download .bpmn file</button>
+    <button mat-menu-item [matMenuTriggerFor]="saveAs">Save as...</button>
+  </mat-menu>
+
+  <mat-menu #saveAs="matMenu">
+    <button mat-menu-item (click)="triggerAction('save_as_new')">new diagram</button>
+    <button mat-menu-item (click)="triggerAction('download_xml')">.bpmn file</button>
   </mat-menu>
 
   <mat-divider class="style-fix" [vertical]="true"></mat-divider>
 
-  <button mat-icon-button onclick="this.blur()" (click)="triggerAction('save_to_server')">
+  <button mat-icon-button
+          matTooltip="Save to server"
+          matTooltipShowDelay="500"
+          onclick="this.blur()"
+          (click)="triggerAction('save_to_server')">
     <mat-icon>save</mat-icon>
   </button>
 
@@ -29,22 +38,41 @@
 
   <mat-divider class="style-fix" [vertical]="true"></mat-divider>
 
-  <button mat-icon-button (click)="triggerAction('download_img')">
+  <button mat-icon-button
+          matTooltip="Download image"
+          matTooltipShowDelay="500"
+          (click)="triggerAction('download_img')">
     <mat-icon fontSet="material-icons-outlined">image</mat-icon>
   </button>
 
   <mat-divider class="style-fix" [vertical]="true"></mat-divider>
 
-  <button mat-icon-button (click)="stopSimulation()" style="color: darkred">
+  <button mat-icon-button
+          matTooltip="Stop simulation"
+          matTooltipShowDelay="1000"
+          style="color: darkred"
+          (click)="stopSimulation()">
     <mat-icon>stop</mat-icon>
   </button>
-  <button mat-icon-button (click)="pauseSimulation()" style="color: grey">
+  <button mat-icon-button
+          matTooltip="Pause simulation"
+          matTooltipShowDelay="1000"
+          style="color: grey"
+          (click)="pauseSimulation()">
     <mat-icon>pause</mat-icon>
   </button>
-  <button mat-icon-button (click)="startSimulation()" style="color: forestgreen">
+  <button mat-icon-button
+          matTooltip="Start simulation"
+          matTooltipShowDelay="1000"
+          style="color: forestgreen"
+          (click)="startSimulation()">
     <mat-icon>play_arrow</mat-icon>
   </button>
-  <button mat-icon-button onclick="this.blur()" (click)="openSimParameterDialog()" style="color: black">
+  <button mat-icon-button
+          matTooltip="Simulation properties"
+          matTooltipShowDelay="500"
+          onclick="this.blur()"
+          (click)="openSimParameterDialog()" style="color: black">
     <mat-icon>settings</mat-icon>
   </button>
 
