@@ -8,6 +8,11 @@ import { CodeDialogData } from '../code-dialog-data';
   styleUrls: ['./code-dialog.component.css']
 })
 export class CodeDialogComponent {
+  editorOptions = {
+    theme: 'vs-dark',
+    language: 'javascript',
+    scrollBeyondLastLine: false
+  };
 
   constructor(public dialogRef: MatDialogRef<CodeDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: CodeDialogData) { }

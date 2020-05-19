@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  // apiServer: 'https://simulation-process-modeler-api.herokuapp.com',
-  apiServer: 'http://localhost:8080',
+  apiServer: 'https://simulation-process-modeler-api.herokuapp.com',
+  // apiServer: 'http://localhost:8080',
 };
 
 /*

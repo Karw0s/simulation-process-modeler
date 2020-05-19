@@ -29,6 +29,7 @@
     "diagram-js": "latest",
     "file-saver": "^2.0.2",
     "min-dash": "latest",
+    "ngx-monaco-editor": "^9.0.0",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"
