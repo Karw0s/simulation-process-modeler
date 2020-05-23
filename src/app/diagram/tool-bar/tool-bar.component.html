@@ -6,7 +6,7 @@
 
   <mat-menu #menu="matMenu" yPosition="below">
     <button mat-menu-item (click)="triggerAction('new_diagram')">New diagram</button>
-    <button mat-menu-item (click)="triggerAction('rename')">Rename diagram</button>
+    <button mat-menu-item (click)="renameDiagram()">Rename diagram</button>
     <button mat-menu-item (click)="file.click()">Open file</button>
     <button mat-menu-item [matMenuTriggerFor]="saveAs">Save as...</button>
   </mat-menu>

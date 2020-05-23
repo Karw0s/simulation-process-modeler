@@ -50,28 +50,30 @@ export class SimParameterDialogComponent implements OnInit {
     console.log(this.simUnits[0].value);
 
     this.isLoading = true;
-    if (this.diagramService.getLoadedDiagramId()) {
-      this.simPropService.getDiagramSimulationProperties(this.diagramService.getLoadedDiagramId())
-        .pipe(finalize(
-          () => this.isLoading = false
-        ))
-        .subscribe(response => {
-          this.simProps = response;
-          if (this.diagramService.getCurrentSimParams()) {
-            this.selectedSimPropId = this.diagramService.getCurrentSimParams();
-          } else {
+    if (this.diagramService.getLoadedDiagramId() != null) {
+      if (this.diagramService.getLoadedDiagramId()) {
+        this.simPropService.getDiagramSimulationProperties(this.diagramService.getLoadedDiagramId())
+          .pipe(finalize(
+            () => this.isLoading = false
+          ))
+          .subscribe(response => {
+            this.simProps = response;
+            if (this.diagramService.getCurrentSimParams()) {
+              this.selectedSimPropId = this.diagramService.getCurrentSimParams();
+            } else {
 
-            this.selectedSimPropId = this.simProps[0].id;
-          }
-          this.simPropService.getSimulationProperties(this.simProps[0].id).subscribe(
-            prop => {
-              this.selectedSimProp = prop;
-              this.updateFormValues(this.selectedSimProp);
+              this.selectedSimPropId = this.simProps[0].id;
             }
-          );
-        });
-    } else {
-      this.isNewPropSet = true;
+            this.simPropService.getSimulationProperties(this.simProps[0].id).subscribe(
+              prop => {
+                this.selectedSimProp = prop;
+                this.updateFormValues(this.selectedSimProp);
+              }
+            );
+          });
+      } else {
+        this.isNewPropSet = true;
+      }
     }
   }
 

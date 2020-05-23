@@ -29,15 +29,27 @@ export class DiagramService {
     this.currentDiagram = new Diagram(null, file.fileName.replace(/.bpmn/g, ''), file.diagram);
   }
 
-  getLoadedDiagramId() { return this.currentDiagram.id; }
+  getLoadedDiagramId() {
+    if (this.currentDiagram == null) {
+      return;
+    } else {
+      return this.currentDiagram.id;
+    }
+  }
 
   getLoadedDiagramName() { return this.currentDiagram.name; }
+
+  setDiagramName(name: string) { this.currentDiagram.name = name; }
 
   getLoadedDiagramXml() { return this.currentDiagram.diagramXML; }
 
   getLoadedDiagram() { return this.currentDiagram; }
 
   setDiagram(diagram: Diagram) { this.currentDiagram = diagram;}
+
+  setCurrentSimParams(simParamId: number) { this.currentSimParams = simParamId; }
+
+  getCurrentSimParams() { return this.currentSimParams; }
 
   /* API */
 
@@ -84,13 +96,5 @@ export class DiagramService {
       console.log('deleted');
       this.deletedDiagram.emit(diagramId);
     });
-  }
-
-  setCurrentSimParams(simParamId: number) {
-    this.currentSimParams = simParamId;
-  }
-
-  getCurrentSimParams() {
-    return this.currentSimParams;
   }
 }
