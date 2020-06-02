@@ -1,8 +1,8 @@
 import { EventEmitter, Injectable, Output } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { DiagramDetailsDTO } from '../models/diagram-details-dto';
-import { DiagramDTO } from '../models/diagram-dto';
+import { DiagramDetailsDTO } from '../models/dto/diagram-details-dto';
+import { DiagramDTO } from '../models/dto/diagram-dto';
 import { tap } from 'rxjs/operators';
 import { Diagram } from '../models/diagram';
 
@@ -19,6 +19,7 @@ export class DiagramService {
   @Output() deletedDiagram: EventEmitter<number> = new EventEmitter();
   currentDiagram: Diagram;
   apiEndpoint = environment.apiServer + '/diagrams';
+  private currentSimParams: number;
 
   constructor(private httpClient: HttpClient) { }
 
@@ -28,15 +29,28 @@ export class DiagramService {
     this.currentDiagram = new Diagram(null, file.fileName.replace(/.bpmn/g, ''), file.diagram);
   }
 
-  getLoadedDiagramId() { return this.currentDiagram.id; }
+  getLoadedDiagramId() {
+    if (this.currentDiagram == null) {
+      return;
+    } else {
+      return this.currentDiagram.id;
+    }
+  }
 
   getLoadedDiagramName() { return this.currentDiagram.name; }
+
+  setDiagramName(name: string) { this.currentDiagram.name = name; }
 
   getLoadedDiagramXml() { return this.currentDiagram.diagramXML; }
 
   getLoadedDiagram() { return this.currentDiagram; }
 
   setDiagram(diagram: Diagram) { this.currentDiagram = diagram;}
+
+  setCurrentSimParams(simParamId: number) { this.currentSimParams = simParamId; }
+
+  getCurrentSimParams() { return this.currentSimParams; }
+
   /* API */
 
   getDiagramsList() {

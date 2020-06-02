@@ -18,6 +18,8 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FlexLayoutModule, FlexModule } from '@angular/flex-layout';
 import { SaveDialogComponent } from './modeler/save-dialog/save-dialog.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MonacoEditorModule } from 'ngx-monaco-editor';
 
 
 @NgModule({
@@ -45,6 +47,9 @@ import { SaveDialogComponent } from './modeler/save-dialog/save-dialog.component
     FormsModule,
     FlexModule,
     FlexLayoutModule,
+    MatTooltipModule,
+    MonacoEditorModule,
+
   ]
 })
 export class DiagramModule {}

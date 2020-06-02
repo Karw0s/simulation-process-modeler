@@ -18,6 +18,7 @@ import { DiagramService } from '../diagram.service';
 import { CanComponentDeactivate } from '../../shared/unsaved-changes.guard';
 import { SaveDialogComponent } from './save-dialog/save-dialog.component';
 import { Diagram } from '../../models/diagram';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 const HIGH_PRIORITY = 1500;
@@ -43,12 +44,14 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
   private isNewDiagram = false;
   private unsavedChanges = false;
   private saveDialogRef;
+  private snackBarRef;
 
   constructor(private diagramService: DiagramService,
               private http: HttpClient,
               private router: Router,
               private route: ActivatedRoute,
-              public dialog: MatDialog) {
+              public dialog: MatDialog,
+              private snackBar: MatSnackBar) {
   }
 
   ngOnInit(): void {
@@ -92,7 +95,7 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
         const script = GroovyElement ? GroovyElement.script : '';
 
         this.codeDialogRef = this.dialog.open(CodeDialogComponent, {
-          height: '575px',
+          minHeight: '575px',
           width: '650px',
           data: {code: script}
         });
@@ -136,10 +139,25 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
 
   ngAfterContentInit(): void {
 
-    this.isLoading = true;
+
     this.bpmnJS.attachTo(this.el.nativeElement);
     this.bpmnJS.get('propertiesPanel').attachTo(this.pp.nativeElement);
 
+    this.loadDiagram();
+
+  }
+
+  ngOnDestroy(): void {
+    this.bpmnJS.destroy();
+  }
+
+  canDeactivate(): Observable<boolean> | Promise<boolean> | boolean {
+    // todo: fix check unsaved
+    return !this.unsavedChanges;
+  }
+
+  loadDiagram() {
+    this.isLoading = true;
     this.route.paramMap.subscribe((params) => {
       this.diagramId = +params.get('id');
 
@@ -154,7 +172,19 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
               this.isNewDiagram = false;
             },
             error => {
-              console.log(`can't load diagram ${this.diagramId}`);
+              this.snackBarRef = this.snackBar.open('Can not load diagram', 'Try again', {
+                duration: 4000,
+                verticalPosition: 'top',
+                horizontalPosition: 'end'
+              })
+              this.snackBarRef.onAction().subscribe(() => {
+                console.log('The snack-bar action was triggered!');
+                this.loadDiagram()
+              });
+              console.log(`can't load diagram ${this.diagramId}\n ${error.toString()}`);
+              console.log(error);
+              console.log(error.status);
+              // this.showError(error.error);
             }
           );
       } else {
@@ -166,38 +196,29 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
       }
       console.log(`is new Diagram: ${this.isNewDiagram}`);
     });
-
-  }
-
-  ngOnDestroy(): void {
-    this.bpmnJS.destroy();
-  }
-
-  canDeactivate(): Observable<boolean> | Promise<boolean> | boolean {
-    // todo: fix check unsaved
-    return !this.unsavedChanges;
   }
 
   loadUrl(url: string) {
 
     return (
-      this.http.get(url, {responseType: 'text'}).pipe(
-        catchError(err => throwError(err)),
-        importDiagram(this.bpmnJS)
-      ).subscribe(
-        (warnings) => {
-          this.importDone.emit({
-            type: 'success',
-            warnings
-          });
-        },
-        (err) => {
-          this.importDone.emit({
-            type: 'error',
-            error: err
-          });
-        }
-      )
+      this.http.get(url, {responseType: 'text'})
+        .pipe(
+          catchError(err => throwError(err)),
+          importDiagram(this.bpmnJS))
+        .subscribe(
+          (warnings) => {
+            this.importDone.emit({
+              type: 'success',
+              warnings
+            });
+          },
+          (err) => {
+            this.importDone.emit({
+              type: 'error',
+              error: err
+            });
+          }
+        )
     );
   }
 
@@ -211,6 +232,27 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
         this.bpmnJS.importXML(this.diagramService.getLoadedDiagramXml());
         this.isNewDiagram = true;
         break;
+      case 'save_as_new':
+        if (this.diagramService.getLoadedDiagramId()) {
+          this.isNewDiagram = true;
+          this.saveDiagram();
+        }
+        break;
+      case 'rename':
+        this.getXML();
+        this.generateDiagramImage().then(image => {
+          this.diagramService.updateDiagram(this.diagramId, this.diagramService.getLoadedDiagramName(), this.diagramXml, image)
+            .subscribe(res => {
+              this.isLoading = false;
+              console.log(res);
+              this.snackBar.open(`Diagram ${this.diagramService.getLoadedDiagramName()} saved.`, null, {
+                duration: 2000,
+                verticalPosition: 'top',
+                horizontalPosition: 'end'
+              })
+            });
+        });
+        break;
       case 'undo':
         this.triggerBPMNJSEditorAction('undo');
         break;
@@ -218,14 +260,20 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
         this.triggerBPMNJSEditorAction('redo');
         break;
       case 'download_xml':
-        this.save();
-        this.unsavedChanges = false;
+        if (this.diagramService.getLoadedDiagramId()) {
+          this.save();
+          this.unsavedChanges = false;
+        }
         break;
       case 'download_img':
-        this.downloadImg();
+        if (this.diagramService.getLoadedDiagramId()) {
+          this.downloadImg();
+        }
         break;
       case 'save_to_server':
-        this.saveDiagram();
+        // if (this.diagramService.getLoadedDiagramId()) {
+          this.saveDiagram();
+        // }
         break;
       case 'start_sim':
         console.log('start_sim');
@@ -242,7 +290,7 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
 
   save() {
     this.bpmnJS.saveXML({format: true}, (err, xml) => {
-      this.downloadFile(xml, 'application/xml', 'grapf.bpmn');
+      this.downloadFile(xml, 'application/xml', `${this.diagramService.getLoadedDiagramName()}.bpmn`);
       return xml;
     });
   }
@@ -250,7 +298,7 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
   downloadImg() {
     this.bpmnJS.saveSVG((err, svg) => {
       console.log(svg);
-      this.downloadFile(svg, 'image/svg+xml', 'diagram.svg');
+      this.downloadFile(svg, 'image/svg+xml', `${this.diagramService.getLoadedDiagramName()}.svg`);
     });
   }
 
@@ -273,20 +321,28 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
     this.generateDiagramImage().then(r => {
       if (this.isNewDiagram) {
         this.saveDialogRef = this.dialog.open(SaveDialogComponent, {
-          height: '575px',
-          width: '650px',
-          data: {name: this.diagramService.getLoadedDiagramName()}
+          data: {
+            title: 'Save Diagram',
+            name: this.diagramService.getLoadedDiagramName()
+          }
         });
 
         this.saveDialogRef.afterClosed().subscribe(
           diagramName => {
-            this.isLoading = true;
-            this.diagramService.createDiagram(diagramName, this.diagramXml, r).subscribe(
-              data => {
-                this.unsavedChanges = false;
-                this.router.navigate(['/modeler', data.id]);
-              }
-            );
+            if (diagramName !== undefined) {
+              this.isLoading = true;
+              this.diagramService.createDiagram(diagramName, this.diagramXml, r).subscribe(
+                data => {
+                  this.unsavedChanges = false;
+                  this.router.navigate(['/modeler', data.id]);
+                  this.snackBar.open(`Diagram ${diagramName} saved.`, null, {
+                    duration: 2000,
+                    verticalPosition: 'top',
+                    horizontalPosition: 'end'
+                  })
+                }
+              );
+            }
           });
       } else {
         this.diagramService.updateDiagram(this.diagramId, this.diagramService.getLoadedDiagramName(), this.diagramXml, r)
@@ -296,7 +352,7 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
           });
         this.unsavedChanges = false;
       }
-    })
+    });
 
   }
 
@@ -314,6 +370,6 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
 
     await v.render();
 
-    return await canvas.convertToBlob()
+    return await canvas.convertToBlob();
   }
 }

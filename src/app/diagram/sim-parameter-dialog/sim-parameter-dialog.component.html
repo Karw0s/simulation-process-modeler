@@ -1,5 +1,40 @@
 <h1 mat-dialog-title>Simulation Parameters</h1>
-<div mat-dialog-content [formGroup]="simParameterForm">
+
+<div mat-dialog-content>
+  <mat-form-field appearance="legacy">
+    <mat-label>Name</mat-label>
+    <mat-select [(value)]="selectedSimPropId" (selectionChange)="change(selectedSimPropId)">
+      <mat-option value="-1">--New--</mat-option>
+      <mat-option *ngFor="let simProp of simProps" [value]="simProp.id">
+        {{simProp.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <!--    <button mat-icon-button-->
+  <!--            matTooltip="Create New"-->
+  <!--            color="primary"-->
+  <!--            onclick="this.blur()"-->
+  <!--            (click)="editMode()">-->
+  <!--      <mat-icon>edit</mat-icon>-->
+  <!--    </button>-->
+  <button mat-icon-button
+          onclick="this.blur()"
+          [disabled]="isNewPropSet"
+
+          (click)="deletePropSet()">
+    <mat-icon>delete_forever</mat-icon>
+  </button>
+</div>
+
+<div [formGroup]="simParameterForm" *ngIf="!isLoading">
+  <mat-form-field appearance="legacy" *ngIf="isNewPropSet">
+    <mat-label>Name</mat-label>
+    <input matInput
+           placeholder="Set name"
+           type="text" [value]="namePropSet" formControlName="name" required>
+  </mat-form-field>
+  <br>
   <mat-form-field appearance="legacy">
     <mat-label>Time of simulation</mat-label>
     <input matInput type="number" min="1" formControlName="time">
@@ -7,8 +42,9 @@
   <br>
   <mat-form-field appearance="legacy">
     <mat-label>Simulation unit</mat-label>
-    <mat-select>
-      <mat-option *ngFor="let unit of simUnits" formControlName="unit">
+    <mat-select formControlName="unit">
+      <!--      [value]="selectedUnit">-->
+      <mat-option *ngFor="let unit of simUnits" [value]="unit.value">
         {{unit.name}}
       </mat-option>
     </mat-select>
@@ -19,7 +55,16 @@
     <input matInput type="number" min="1" formControlName="rate">
   </mat-form-field>
 </div>
-<div mat-dialog-actions>
+
+<mat-spinner *ngIf="isLoading" diameter="70" fxLayoutAlign="center"></mat-spinner>
+
+
+<div mat-dialog-actions fxLayout="row" fxLayoutAlign="end">
   <button mat-raised-button (click)="onNoClick()">Cancel</button>
-  <button mat-raised-button color="primary" (click)="save()" [mat-dialog-close]="simParameterForm">Save</button>
+  <button mat-raised-button
+          color="primary"
+          (click)="save()"
+          [disabled]="!simParameterForm.valid">Apply
+    <!--          [mat-dialog-close]="simParameterForm.value"-->
+  </button>
 </div>

@@ -20,6 +20,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MonacoEditorModule } from 'ngx-monaco-editor';
 
 
 @NgModule({
@@ -44,7 +45,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     MatCardModule,
     MatDialogModule,
     MatButtonModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MonacoEditorModule.forRoot()
   ],
   providers: [UnsavedChangesGuard],
   bootstrap: [AppComponent]
