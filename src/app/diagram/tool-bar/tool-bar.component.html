@@ -1,5 +1,7 @@
 <mat-toolbar>
-  <button mat-icon-button [mat-menu-trigger-for]="menu">
+  <button mat-icon-button
+          onclick="this.blur()"
+          [mat-menu-trigger-for]="menu">
     <mat-icon fontSet="material-icons-outlined">insert_drive_file</mat-icon>
     <mat-icon>arrow_drop_down</mat-icon>
   </button>
@@ -12,7 +14,9 @@
   </mat-menu>
 
   <mat-menu #saveAs="matMenu">
-    <button mat-menu-item (click)="triggerAction('save_as_new')">new diagram</button>
+    <button mat-menu-item
+            onclick="this.blur()"
+            (click)="triggerAction('save_as_new')">new diagram</button>
     <button mat-menu-item (click)="triggerAction('download_xml')">.bpmn file</button>
   </mat-menu>
 
@@ -41,6 +45,7 @@
   <button mat-icon-button
           matTooltip="Download image"
           matTooltipShowDelay="500"
+          onclick="this.blur()"
           (click)="triggerAction('download_img')">
     <mat-icon fontSet="material-icons-outlined">image</mat-icon>
   </button>
@@ -51,6 +56,7 @@
           matTooltip="Stop simulation"
           matTooltipShowDelay="1000"
           style="color: darkred"
+          onclick="this.blur()"
           (click)="stopSimulation()">
     <mat-icon>stop</mat-icon>
   </button>
@@ -58,6 +64,7 @@
           matTooltip="Pause simulation"
           matTooltipShowDelay="1000"
           style="color: grey"
+          onclick="this.blur()"
           (click)="pauseSimulation()">
     <mat-icon>pause</mat-icon>
   </button>

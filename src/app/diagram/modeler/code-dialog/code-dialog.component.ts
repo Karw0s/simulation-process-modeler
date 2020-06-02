@@ -11,7 +11,7 @@ export class CodeDialogComponent {
   selectedLanguage;
   editorOptions = {
     theme: 'vs-dark',
-    language: 'javascript',
+    language: 'java',
     scrollBeyondLastLine: false
   };
 

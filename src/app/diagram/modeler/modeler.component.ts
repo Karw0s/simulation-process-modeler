@@ -173,7 +173,7 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
             },
             error => {
               this.snackBarRef = this.snackBar.open('Can not load diagram', 'Try again', {
-                duration: 2000,
+                duration: 4000,
                 verticalPosition: 'top',
                 horizontalPosition: 'end'
               })
@@ -238,6 +238,21 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
           this.saveDiagram();
         }
         break;
+      case 'rename':
+        this.getXML();
+        this.generateDiagramImage().then(image => {
+          this.diagramService.updateDiagram(this.diagramId, this.diagramService.getLoadedDiagramName(), this.diagramXml, image)
+            .subscribe(res => {
+              this.isLoading = false;
+              console.log(res);
+              this.snackBar.open(`Diagram ${this.diagramService.getLoadedDiagramName()} saved.`, null, {
+                duration: 2000,
+                verticalPosition: 'top',
+                horizontalPosition: 'end'
+              })
+            });
+        });
+        break;
       case 'undo':
         this.triggerBPMNJSEditorAction('undo');
         break;
@@ -256,9 +271,9 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
         }
         break;
       case 'save_to_server':
-        if (this.diagramService.getLoadedDiagramId()) {
+        // if (this.diagramService.getLoadedDiagramId()) {
           this.saveDiagram();
-        }
+        // }
         break;
       case 'start_sim':
         console.log('start_sim');
@@ -275,7 +290,7 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
 
   save() {
     this.bpmnJS.saveXML({format: true}, (err, xml) => {
-      this.downloadFile(xml, 'application/xml', 'grapf.bpmn');
+      this.downloadFile(xml, 'application/xml', `${this.diagramService.getLoadedDiagramName()}.bpmn`);
       return xml;
     });
   }
@@ -283,7 +298,7 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
   downloadImg() {
     this.bpmnJS.saveSVG((err, svg) => {
       console.log(svg);
-      this.downloadFile(svg, 'image/svg+xml', 'diagram.svg');
+      this.downloadFile(svg, 'image/svg+xml', `${this.diagramService.getLoadedDiagramName()}.svg`);
     });
   }
 
@@ -306,8 +321,6 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
     this.generateDiagramImage().then(r => {
       if (this.isNewDiagram) {
         this.saveDialogRef = this.dialog.open(SaveDialogComponent, {
-          height: '575px',
-          width: '650px',
           data: {
             title: 'Save Diagram',
             name: this.diagramService.getLoadedDiagramName()
@@ -316,13 +329,20 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
 
         this.saveDialogRef.afterClosed().subscribe(
           diagramName => {
-            this.isLoading = true;
-            this.diagramService.createDiagram(diagramName, this.diagramXml, r).subscribe(
-              data => {
-                this.unsavedChanges = false;
-                this.router.navigate(['/modeler', data.id]);
-              }
-            );
+            if (diagramName !== undefined) {
+              this.isLoading = true;
+              this.diagramService.createDiagram(diagramName, this.diagramXml, r).subscribe(
+                data => {
+                  this.unsavedChanges = false;
+                  this.router.navigate(['/modeler', data.id]);
+                  this.snackBar.open(`Diagram ${diagramName} saved.`, null, {
+                    duration: 2000,
+                    verticalPosition: 'top',
+                    horizontalPosition: 'end'
+                  })
+                }
+              );
+            }
           });
       } else {
         this.diagramService.updateDiagram(this.diagramId, this.diagramService.getLoadedDiagramName(), this.diagramXml, r)

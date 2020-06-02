@@ -85,10 +85,8 @@ export class ToolBarComponent implements OnInit {
   renameDiagram() {
     if (this.diagramService.getLoadedDiagramId()) {
       this.dialogRef = this.dialog.open(SaveDialogComponent, {
-        height: '575px',
-        width: '650px',
         data: {
-          title: 'Save Diagram',
+          title: 'Rename Diagram',
           name: this.diagramService.getLoadedDiagramName()
         }
       });
@@ -96,11 +94,12 @@ export class ToolBarComponent implements OnInit {
       this.dialogRef.afterClosed().subscribe(result => {
         if (result) {
           this.diagramService.setDiagramName(result);
-          this.diagramService.updateDiagram(
-            this.diagramService.getLoadedDiagramId(),
-            this.diagramService.getLoadedDiagramName(),
-            this.diagramService.getLoadedDiagramXml().toString(),
-            this.diagramService.getLoadedDiagram().diagramXML);
+          this.triggerAction('rename');
+          // this.diagramService.updateDiagram(
+          //   this.diagramService.getLoadedDiagramId(),
+          //   this.diagramService.getLoadedDiagramName(),
+          //   this.diagramService.getLoadedDiagramXml().toString(),
+          //   this.diagramService.getLoadedDiagram().image);
         }
         console.log('result from dialog' + result);
       });
