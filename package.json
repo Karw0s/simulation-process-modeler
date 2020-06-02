@@ -13,13 +13,13 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "~9.1.4",
-    "@angular/cdk": "^9.2.2",
+    "@angular/cdk": "^9.2.4",
     "@angular/common": "~9.1.4",
     "@angular/compiler": "~9.1.4",
     "@angular/core": "~9.1.4",
     "@angular/flex-layout": "^9.0.0-beta.29",
     "@angular/forms": "~9.1.4",
-    "@angular/material": "^9.2.2",
+    "@angular/material": "^9.2.4",
     "@angular/platform-browser": "~9.1.4",
     "@angular/platform-browser-dynamic": "~9.1.4",
     "@angular/router": "~9.1.4",
@@ -31,6 +31,7 @@
     "diagram-js": "latest",
     "file-saver": "^2.0.2",
     "min-dash": "latest",
+    "ngx-monaco-editor": "^9.0.0",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"
@@ -55,6 +56,10 @@
     "ts-node": "~8.6.2",
     "tslint": "~6.1.2",
     "typescript": "~3.8.3"
+  },
+  "resolutions": {
+    "minimist": "^1.2.3",
+    "acorn": ">=6.4.1"
   },
   "engines": {
     "node": "13.2.0",

@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../../shared/confirmation-dialog/confirmation-dialog.component';
-import { DiagramDetailsDTO } from '../../models/diagram-details-dto';
+import { DiagramDetailsDTO } from '../../models/dto/diagram-details-dto';
 import { DiagramService } from '../../diagram/diagram.service';
 import { finalize } from 'rxjs/operators';
 
@@ -32,7 +32,6 @@ export class DiagramsListItemComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         console.log(`delete confirm for ${this.diagram.id}`);
-        // todo: delete diagram
         this.diagramService.deleteDiagram(this.diagram.id)
       } else {
         console.log(`delete canceled`);

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DiagramService } from '../diagram/diagram.service';
 import { finalize } from 'rxjs/operators';
-import { DiagramDetailsDTO } from '../models/diagram-details-dto';
+import { DiagramDetailsDTO } from '../models/dto/diagram-details-dto';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
