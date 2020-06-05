@@ -352,10 +352,11 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
         .subscribe(res => {
           this.isLoading = false;
           console.log(res);
-          this.snackBar.open(`Diagram ${this.diagramService.getLoadedDiagramName()} saved.`, null, {
+          this.snackBar.open('Saved successfully.', null, {
             duration: 2000,
             verticalPosition: 'top',
-            horizontalPosition: 'end'
+            horizontalPosition: 'end',
+            panelClass: ['green-snackbar']
           });
         });
     });

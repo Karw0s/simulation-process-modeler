@@ -19,7 +19,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FlexLayoutModule, FlexModule } from '@angular/flex-layout';
 import { SaveDialogComponent } from './modeler/save-dialog/save-dialog.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MonacoEditorModule } from 'ngx-monaco-editor';
+import { MonacoEditorModule } from '@materia-ui/ngx-monaco-editor';
+
 
 
 @NgModule({
