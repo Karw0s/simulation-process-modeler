@@ -1,5 +1,4 @@
 ngx-monaco-editor {
-  height: calc(100% - 50px);
-  width: calc(100% - 30px);
+  height: calc(100% - 25px);
   padding: 15px;
 }

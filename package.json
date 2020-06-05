@@ -23,6 +23,7 @@
     "@angular/platform-browser": "~9.1.4",
     "@angular/platform-browser-dynamic": "~9.1.4",
     "@angular/router": "~9.1.4",
+    "@materia-ui/ngx-monaco-editor": "^4.0.1",
     "express": "^4.17.1",
     "bpmn-js": "^6.3.0",
     "bpmn-js-properties-panel": "^0.33.1",
@@ -31,7 +32,7 @@
     "diagram-js": "latest",
     "file-saver": "^2.0.2",
     "min-dash": "latest",
-    "ngx-monaco-editor": "^9.0.0",
+    "monaco-editor": "^0.20.0",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"
