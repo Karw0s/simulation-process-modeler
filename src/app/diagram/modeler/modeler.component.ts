@@ -333,7 +333,7 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
                     duration: 2000,
                     verticalPosition: 'top',
                     horizontalPosition: 'end',
-                    panelClass: ['blue-snackbar']
+                    panelClass: ['error-snackbar']
                   });
                 }
               );
@@ -363,7 +363,7 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
               duration: 2000,
               verticalPosition: 'top',
               horizontalPosition: 'end',
-              panelClass: ['green-snackbar']
+              panelClass: ['success-snackbar']
             });
           },
           error => {
@@ -372,7 +372,7 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
               duration: 2000,
               verticalPosition: 'top',
               horizontalPosition: 'end',
-              panelClass: ['blue-snackbar']
+              panelClass: ['error-snackbar']
             });
           });
     });
