@@ -138,13 +138,10 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
   }
 
   ngAfterContentInit(): void {
-
-
     this.bpmnJS.attachTo(this.el.nativeElement);
     this.bpmnJS.get('propertiesPanel').attachTo(this.pp.nativeElement);
 
     this.loadDiagram();
-
   }
 
   ngOnDestroy(): void {
@@ -329,6 +326,15 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
                     verticalPosition: 'top',
                     horizontalPosition: 'end'
                   });
+                },
+                error => {
+                  console.log(error);
+                  this.snackBar.open(`Cannot save. Try again.`, null, {
+                    duration: 2000,
+                    verticalPosition: 'top',
+                    horizontalPosition: 'end',
+                    panelClass: ['blue-snackbar']
+                  });
                 }
               );
             });
@@ -349,16 +355,26 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
   private updateDiagram() {
     this.generateDiagramImage().then(image => {
       this.diagramService.updateDiagram(this.diagramId, this.diagramService.getLoadedDiagramName(), this.diagramXml, image)
-        .subscribe(res => {
-          this.isLoading = false;
-          console.log(res);
-          this.snackBar.open('Saved successfully.', null, {
-            duration: 2000,
-            verticalPosition: 'top',
-            horizontalPosition: 'end',
-            panelClass: ['green-snackbar']
+        .subscribe(
+          res => {
+            this.isLoading = false;
+            console.log(res);
+            this.snackBar.open('Saved successfully.', null, {
+              duration: 2000,
+              verticalPosition: 'top',
+              horizontalPosition: 'end',
+              panelClass: ['green-snackbar']
+            });
+          },
+          error => {
+            console.log(error);
+            this.snackBar.open(`Cannot save. Try again.`, null, {
+              duration: 2000,
+              verticalPosition: 'top',
+              horizontalPosition: 'end',
+              panelClass: ['blue-snackbar']
+            });
           });
-        });
     });
   }
 
