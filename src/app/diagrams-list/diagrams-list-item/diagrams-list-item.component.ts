@@ -14,12 +14,18 @@ export class DiagramsListItemComponent implements OnInit {
   @Input() diagram: DiagramDetailsDTO;
   imageToShow: any;
   isLoading = false;
+  diagramName: string;
 
   constructor(public diagramService: DiagramService,
               public dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.getImage();
+    if (this.diagram.name.length > 18) {
+      this.diagramName = this.diagram.name.substr(0, 15) + '...';
+    } else {
+      this.diagramName = this.diagram.name;
+    }
   }
 
   deleteDiagram(id: number) {
@@ -32,7 +38,7 @@ export class DiagramsListItemComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         console.log(`delete confirm for ${this.diagram.id}`);
-        this.diagramService.deleteDiagram(this.diagram.id)
+        this.diagramService.deleteDiagram(this.diagram.id);
       } else {
         console.log(`delete canceled`);
       }
