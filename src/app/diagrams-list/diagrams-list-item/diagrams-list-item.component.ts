@@ -21,8 +21,8 @@ export class DiagramsListItemComponent implements OnInit {
 
   ngOnInit(): void {
     this.getImage();
-    if (this.diagram.name.length > 23) {
-      this.diagramName = this.diagram.name.substr(0, 20) + '...';
+    if (this.diagram.name.length > 18) {
+      this.diagramName = this.diagram.name.substr(0, 15) + '...';
     } else {
       this.diagramName = this.diagram.name;
     }
