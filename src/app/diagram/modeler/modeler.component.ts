@@ -1,6 +1,6 @@
 import { AfterContentInit, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
-import { catchError, finalize } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -8,7 +8,6 @@ import { saveAs } from 'file-saver';
 import { CustomPropsProvider } from '../../providers/CustomPropsProvider';
 import customPaletteProvider from '../../custom-elements/palette/index';
 import { InjectionNames, Modeler, OriginalPropertiesProvider, PropertiesPanelModule } from '../../providers/bpmn-js';
-import { importDiagram } from './rx';
 // @ts-ignore
 import qsExtension from 'src/assets/gs.json';
 import Canvg, { presets } from 'canvg';
@@ -165,7 +164,7 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
           ))
           .subscribe(
             diagram => {
-              this.bpmnJS.importXML(diagram.diagramXML);
+              this.importDiagramAsync(diagram.diagramXML);
               this.isNewDiagram = false;
             },
             error => {
@@ -188,36 +187,36 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
         this.bpmnJS.createDiagram();
         this.isLoading = false;
         this.isNewDiagram = true;
-        this.getXML();
+        this.getXML().then(result => {this.diagramXml = result.xml;});
         this.diagramService.setDiagram(new Diagram(null, 'newDiagram', this.diagramXml));
       }
       console.log(`is new Diagram: ${this.isNewDiagram}`);
     });
   }
 
-  loadUrl(url: string) {
-
-    return (
-      this.http.get(url, {responseType: 'text'})
-        .pipe(
-          catchError(err => throwError(err)),
-          importDiagram(this.bpmnJS))
-        .subscribe(
-          (warnings) => {
-            this.importDone.emit({
-              type: 'success',
-              warnings
-            });
-          },
-          (err) => {
-            this.importDone.emit({
-              type: 'error',
-              error: err
-            });
-          }
-        )
-    );
-  }
+  // loadUrl(url: string) {
+  //
+  //   return (
+  //     this.http.get(url, {responseType: 'text'})
+  //       .pipe(
+  //         catchError(err => throwError(err)),
+  //         importDiagram(this.bpmnJS))
+  //       .subscribe(
+  //         (warnings) => {
+  //           this.importDone.emit({
+  //             type: 'success',
+  //             warnings
+  //           });
+  //         },
+  //         (err) => {
+  //           this.importDone.emit({
+  //             type: 'error',
+  //             error: err
+  //           });
+  //         }
+  //       )
+  //   );
+  // }
 
   toolBarEvent(action: string) {
     console.log(`Modeler received ${action} from toolbar.`);
@@ -236,7 +235,7 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
         }
         break;
       case 'rename':
-        this.getXML();
+        this.getXML().then(result => {this.diagramXml = result.xml;});
         this.updateDiagram();
         break;
       case 'undo':
@@ -275,14 +274,13 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
   }
 
   save() {
-    this.bpmnJS.saveXML({format: true}, (err, xml) => {
-      this.downloadFile(xml, 'application/xml', `${this.diagramService.getLoadedDiagramName()}.bpmn`);
-      return xml;
+    this.bpmnJS.saveXML({format: true}).then(result => {
+      this.downloadFile(result.xml, 'application/xml', `${this.diagramService.getLoadedDiagramName()}.bpmn`);
     });
   }
 
   downloadImg() {
-    this.bpmnJS.saveSVG((err, svg) => {
+    this.bpmnJS.saveSVG().then(svg => {
       console.log(svg);
       this.downloadFile(svg, 'image/svg+xml', `${this.diagramService.getLoadedDiagramName()}.svg`);
     });
@@ -293,16 +291,8 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
     saveAs(blob, fileName);
   }
 
-  getSvg() {
-    return this.bpmnJS.saveSVG((err, svg) => {
-      // console.log(svg);
-      this.diagramSvg = svg;
-      return svg;
-    });
-  }
-
   saveDiagram() {
-    this.getXML();
+    this.getXML().then(result => {this.diagramXml = result.xml;});
 
     if (this.isNewDiagram) {
       this.saveDialogRef = this.dialog.open(SaveDialogComponent, {
@@ -346,10 +336,10 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
     }
   }
 
-  private getXML() {
-    this.bpmnJS.saveXML({format: false}, (err, xml) => {
-      this.diagramXml = xml;
-    });
+  private async getXML() {
+    const xml = await this.bpmnJS.saveXML({format: true});
+    console.log(xml);
+    return xml;
   }
 
   private updateDiagram() {
@@ -379,13 +369,25 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
   }
 
   private async generateDiagramImage(): Promise<Blob> {
-    this.getSvg();
+    let svg = await this.bpmnJS.saveSVG();
+    this.diagramSvg = svg.svg;
+    svg = svg.svg;
     const canvas = new OffscreenCanvas(200, 200);
     const ctx = canvas.getContext('2d');
-    const v = await Canvg.from(ctx, this.diagramSvg, presets.offscreen());
+    const v = await Canvg.from(ctx, svg, presets.offscreen());
 
     await v.render();
 
     return await canvas.convertToBlob();
+  }
+
+  private async importDiagramAsync(diagramXML: string | ArrayBuffer) {
+    try {
+      const result = await this.bpmnJS.importXML(diagramXML);
+      const {warnings} = result;
+      console.log(warnings);
+    } catch (e) {
+      console.log(e);
+    }
   }
 }
