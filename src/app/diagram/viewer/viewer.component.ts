@@ -2,7 +2,7 @@ import { AfterContentInit, Component, ElementRef, EventEmitter, OnDestroy, OnIni
 // import { InjectionNames,   OriginalPropertiesProvider, PropertiesPanelModule } from '../../providers/bpmn-js';
 import * as Viewer from 'bpmn-js/dist/bpmn-navigated-viewer.development.js';
 // @ts-ignore
-import qsExtension from '../../../assets/gs.json';
+import qsExtension from '../../../assets/gsx.json';
 import { catchError, finalize } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { importDiagram } from '../modeler/rx';

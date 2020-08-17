@@ -9,7 +9,7 @@ import { CustomPropsProvider } from '../../providers/CustomPropsProvider';
 import customPaletteProvider from '../../custom-elements/palette/index';
 import { InjectionNames, Modeler, OriginalPropertiesProvider, PropertiesPanelModule } from '../../providers/bpmn-js';
 // @ts-ignore
-import qsExtension from 'src/assets/gs.json';
+import qsExtension from 'src/assets/gsx.json';
 import Canvg, { presets } from 'canvg';
 import { CodeDialogComponent } from './code-dialog/code-dialog.component';
 import { getBusinessObject } from 'bpmn-js/lib/util/ModelUtil';
@@ -90,7 +90,7 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
         const businessObject = getBusinessObject(event.element);
         this.diagramElement = event.element;
 
-        let GroovyElement = getExtensionElement(businessObject, 'gs:GroovyNode');
+        let GroovyElement = getExtensionElement(businessObject, 'gsx:GroovyScript');
         const script = GroovyElement ? GroovyElement.script : '';
 
         this.codeDialogRef = this.dialog.open(CodeDialogComponent, {
@@ -109,7 +109,7 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
             }
 
             if (!GroovyElement) {
-              GroovyElement = moddle.create('gs:GroovyNode');
+              GroovyElement = moddle.create('gsx:GroovyScript');
               extensionElements.get('values').push(GroovyElement);
             }
 

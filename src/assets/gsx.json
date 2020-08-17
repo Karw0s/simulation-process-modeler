@@ -1,18 +1,18 @@
 {
-  "name": "GroovyScript",
-  "uri": "http://some-company/schema/bpmn/gs",
-  "prefix": "gs",
+  "name": "GroovyScriptExtension",
+  "uri": "http://michal-karwowski.pl/schema/bpmn/gsx",
+  "prefix": "gsx",
   "xml": {
     "tagAlias": "lowerCase"
   },
   "types": [
     {
-      "name": "GroovyNode",
+      "name": "GroovyScript",
       "superClass": ["Element"],
       "properties": [
         {
           "name": "script",
-          "isAttr": true,
+          "isBody": true,
           "type": "String"
         }
       ]
