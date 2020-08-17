@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { DiagramService } from '../../diagram/diagram.service';
 
 @Component({
@@ -25,7 +25,16 @@ export class NavBarComponent implements OnInit {
         this.router.navigate(['/viewer']);
       }
     } else {
-      this.router.navigate([`/${destination}`, this.diagramService.getLoadedDiagramId()]);
+      if (this.diagramService.getLoadedDiagramId() != null) {
+        this.router.navigate([`/${destination}`, this.diagramService.getLoadedDiagramId()]);
+      }
+      else {
+        if (destination.match('modeler')) {
+          this.router.navigate(['/modeler/new']);
+        } else {
+          this.router.navigate(['/viewer']);
+        }
+      }
     }
   }
 }

@@ -280,9 +280,9 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
   }
 
   downloadImg() {
-    this.bpmnJS.saveSVG().then(svg => {
-      console.log(svg);
-      this.downloadFile(svg, 'image/svg+xml', `${this.diagramService.getLoadedDiagramName()}.svg`);
+    this.bpmnJS.saveSVG().then(result => {
+      console.log(result);
+      this.downloadFile(result.svg, 'image/svg+xml', `${this.diagramService.getLoadedDiagramName()}.svg`);
     });
   }
 

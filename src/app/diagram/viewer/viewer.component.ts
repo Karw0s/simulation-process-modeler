@@ -9,6 +9,7 @@ import { importDiagram } from '../modeler/rx';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DiagramService } from '../diagram.service';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-viewer',
@@ -82,7 +83,6 @@ export class ViewerComponent implements OnInit, OnDestroy, AfterContentInit {
     });
   }
 
-
   ngOnDestroy(): void {
     this.viewer.destroy();
   }
@@ -117,12 +117,25 @@ export class ViewerComponent implements OnInit, OnDestroy, AfterContentInit {
         break;
       case 'open_diagram_file':
         console.log('open_diagram_file');
+        this.viewer.importXML(this.diagramService.getLoadedDiagramXml());
+        break;
+      case 'save_as_new':
+        console.log('open it in modeler.');
         break;
       case 'download_xml':
         console.log('saving to .bpmn file');
+        if (this.diagramService.getLoadedDiagramId()) {
+          this.viewer.saveXML({format: true}).then(result => {
+            this.downloadFile(result.xml, 'application/xml', `${this.diagramService.getLoadedDiagramName()}.bpmn`);
+          });
+        }
         break;
       case 'download_img':
         console.log('downloading image');
+        this.viewer.saveSVG().then(result => {
+          console.log(result);
+          this.downloadFile(result.svg, 'image/svg+xml', `${this.diagramService.getLoadedDiagramName()}.svg`);
+        });
         break;
       case 'start_sim':
         console.log('start_sim');
@@ -133,5 +146,9 @@ export class ViewerComponent implements OnInit, OnDestroy, AfterContentInit {
     }
   }
 
+  downloadFile(data, dataType, fileName) {
+    const blob = new Blob([data], {type: dataType});
+    saveAs(blob, fileName);
+  }
 
 }
