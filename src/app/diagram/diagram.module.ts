@@ -20,6 +20,7 @@ import { FlexLayoutModule, FlexModule } from '@angular/flex-layout';
 import { SaveDialogComponent } from './modeler/save-dialog/save-dialog.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MonacoEditorModule } from '@materia-ui/ngx-monaco-editor';
+import { MatCardModule } from '@angular/material/card';
 
 
 
@@ -32,25 +33,26 @@ import { MonacoEditorModule } from '@materia-ui/ngx-monaco-editor';
     ToolBarComponent,
     SaveDialogComponent
   ],
-  imports: [
-    CommonModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    ReactiveFormsModule,
-    MatIconModule,
-    MatToolbarModule,
-    MatMenuModule,
-    MatDividerModule,
-    MatProgressSpinnerModule,
-    FormsModule,
-    FlexModule,
-    FlexLayoutModule,
-    MatTooltipModule,
-    MonacoEditorModule,
+    imports: [
+        CommonModule,
+        MatDialogModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+        ReactiveFormsModule,
+        MatIconModule,
+        MatToolbarModule,
+        MatMenuModule,
+        MatDividerModule,
+        MatProgressSpinnerModule,
+        FormsModule,
+        FlexModule,
+        FlexLayoutModule,
+        MatTooltipModule,
+        MonacoEditorModule,
+        MatCardModule,
 
-  ]
+    ]
 })
 export class DiagramModule {}

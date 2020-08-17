@@ -7,3 +7,7 @@
   border: solid 3px #EEE;
   position: relative;
 }
+
+.component {
+  background: #f5f5f5;
+}
