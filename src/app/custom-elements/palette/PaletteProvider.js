@@ -163,7 +163,7 @@ PaletteProvider.prototype.getPaletteEntries = function (element) {
       translate('Create Task')
     ),
     'create.groovy-task': {
-      group: 'event',
+      group: 'activity',
       className: 'bpmn-icon-script-task',
       title: translate('Create Groovy Task'),
       action: {

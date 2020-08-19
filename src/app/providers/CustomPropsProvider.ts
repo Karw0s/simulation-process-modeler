@@ -34,7 +34,7 @@ export class CustomPropsProvider implements IPropertiesProvider {
     }
 
     function getGroovyScript(businessObject) {
-      const GroovyElement = getExtensionElement(businessObject, 'gs:GroovyNode');
+      const GroovyElement = getExtensionElement(businessObject, 'gsx:GroovyScript');
       const script = GroovyElement ? GroovyElement.script : '';
       if (GroovyElement) {
         return GroovyElement.script;

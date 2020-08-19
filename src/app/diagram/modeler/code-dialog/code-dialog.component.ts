@@ -12,7 +12,8 @@ export class CodeDialogComponent {
   editorOptions = {
     theme: 'vs-dark',
     language: 'java',
-    scrollBeyondLastLine: false
+    scrollBeyondLastLine: false,
+    readOnly: undefined
   };
 
   languages = [
@@ -22,7 +23,9 @@ export class CodeDialogComponent {
   ]
 
   constructor(public dialogRef: MatDialogRef<CodeDialogComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: CodeDialogData) { }
+              @Inject(MAT_DIALOG_DATA) public data: CodeDialogData) {
+    this.editorOptions.readOnly = data.readOnly;
+  }
 
   onNoClick() {
     this.dialogRef.close();

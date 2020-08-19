@@ -10,6 +10,9 @@ import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DiagramService } from '../diagram.service';
 import { saveAs } from 'file-saver';
+import { CodeDialogComponent } from '../modeler/code-dialog/code-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { getBusinessObject } from 'bpmn-js/lib/util/ModelUtil';
 
 @Component({
   selector: 'app-viewer',
@@ -24,10 +27,12 @@ export class ViewerComponent implements OnInit, OnDestroy, AfterContentInit {
   private viewer: any;
   private diagramId: number;
   private isLoading: boolean;
+  private codeDialogRef;
 
   constructor(private diagramService: DiagramService,
               private http: HttpClient,
               private router: Router,
+              public dialog: MatDialog,
               private route: ActivatedRoute) {}
 
   ngOnInit(): void {
@@ -51,6 +56,38 @@ export class ViewerComponent implements OnInit, OnDestroy, AfterContentInit {
       }
     });
 
+    this.viewer.on('element.dblclick', 1500, (event) => {
+      event.originalEvent.preventDefault();
+      event.originalEvent.stopPropagation();
+
+      if (event.element.businessObject.$type !== 'bpmn:Process') {
+        const businessObject = getBusinessObject(event.element);
+        const GroovyElement = getExtensionElement(businessObject, 'gsx:GroovyScript');
+        const script = GroovyElement ? GroovyElement.script : '';
+
+        this.codeDialogRef = this.dialog.open(CodeDialogComponent, {
+          minHeight: '575px',
+          width: '650px',
+          data: {code: script, readOnly: true}
+        });
+
+        this.codeDialogRef.afterClosed().subscribe(result => {
+          console.log('code dialog result: ' + result);
+        });
+      }
+    });
+
+    function getExtensionElement(element, type) {
+      if (!element.extensionElements) {
+        return;
+      }
+
+      if (element.extensionElements.values) {
+        return element.extensionElements.values.filter((extensionElement) => {
+          return extensionElement.$instanceOf(type);
+        })[0];
+      }
+    }
   }
 
   ngAfterContentInit(): void {

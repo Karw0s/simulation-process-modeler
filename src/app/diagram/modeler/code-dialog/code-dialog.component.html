@@ -1,4 +1,6 @@
-<h1 mat-dialog-title>Put Your Code Here</h1>
+<div *ngIf="data.readOnly; else editableTitle"><h1 mat-dialog-title>Element Code</h1></div>
+<ng-template #editableTitle><h1 mat-dialog-title>Put Your Code Here</h1></ng-template>
+
 <!--<div fxLayout="column">-->
 
 
@@ -28,7 +30,12 @@
   <!--  </div>-->
 </div>
 <div fxLayout="row" fxLayoutAlign="end" mat-dialog-actions>
-  <button mat-raised-button color="warn" (click)="onNoClick()">Cancel</button>
-  <button mat-raised-button color="primary" [mat-dialog-close]="data.code" cdkFocusInitial>Apply</button>
+  <div *ngIf="data.readOnly; else editable">
+    <button mat-raised-button color="warn" (click)="onNoClick()">Close</button>
+  </div>
+  <ng-template #editable>
+    <button mat-raised-button color="warn" (click)="onNoClick()">Cancel</button>
+    <button mat-raised-button color="primary" [mat-dialog-close]="data.code" cdkFocusInitial>Apply</button>
+  </ng-template>
 </div>
 <!--</div>-->

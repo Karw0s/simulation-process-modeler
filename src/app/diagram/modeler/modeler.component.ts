@@ -96,7 +96,7 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
         this.codeDialogRef = this.dialog.open(CodeDialogComponent, {
           minHeight: '575px',
           width: '650px',
-          data: {code: script}
+          data: {code: script, readOnly: false}
         });
 
         this.codeDialogRef.afterClosed().subscribe(result => {
