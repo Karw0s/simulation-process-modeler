@@ -95,11 +95,6 @@ export class ToolBarComponent implements OnInit {
         if (result) {
           this.diagramService.setDiagramName(result);
           this.triggerAction('rename');
-          // this.diagramService.updateDiagram(
-          //   this.diagramService.getLoadedDiagramId(),
-          //   this.diagramService.getLoadedDiagramName(),
-          //   this.diagramService.getLoadedDiagramXml().toString(),
-          //   this.diagramService.getLoadedDiagram().image);
         }
         console.log('result from dialog' + result);
       });

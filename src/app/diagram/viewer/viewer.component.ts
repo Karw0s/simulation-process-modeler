@@ -38,12 +38,6 @@ export class ViewerComponent implements OnInit, OnDestroy, AfterContentInit {
   ngOnInit(): void {
     this.viewer = new Viewer({
       additionalModules: [
-        // PropertiesPanelModule,
-        //
-        // {[InjectionNames.bpmnPropertiesProvider]: ['type', OriginalPropertiesProvider.propertiesProvider[1]]},
-        // {[InjectionNames.propertiesProvider]: ['type', CustomPropsProvider]},
-
-        // customPaletteProvider,
       ],
       moddleExtensions: {
         gs: qsExtension
@@ -92,7 +86,6 @@ export class ViewerComponent implements OnInit, OnDestroy, AfterContentInit {
 
   ngAfterContentInit(): void {
     this.viewer.attachTo(this.el.nativeElement);
-    // this.viewer.get('propertiesPanel').attachTo(this.pp.nativeElement);
     this.isLoading = true;
 
     this.route.paramMap.subscribe((params) => {
@@ -115,7 +108,6 @@ export class ViewerComponent implements OnInit, OnDestroy, AfterContentInit {
       } else {
         this.loadUrl('https://cdn.staticaly.com/gh/bpmn-io/bpmn-js-examples/dfceecba/starter/diagram.bpmn');
         this.isLoading = false;
-        // this.isNewDiagram = true;
       }
     });
   }

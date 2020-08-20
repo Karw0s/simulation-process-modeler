@@ -4,7 +4,7 @@ export class CustomPropsProvider implements IPropertiesProvider {
 
   static $inject = ['translate', 'bpmnPropertiesProvider'];
 
-// Note that names of arguments must match injected modules, see InjectionNames.
+// Names of arguments must match injected modules, see InjectionNames.
   constructor(private translate, private bpmnPropertiesProvider) {
   }
 
