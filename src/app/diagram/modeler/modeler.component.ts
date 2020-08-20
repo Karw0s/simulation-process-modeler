@@ -102,7 +102,7 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
         this.codeDialogRef.afterClosed().subscribe(result => {
 
           console.log('code dialog result: ' + result);
-          if (result) {
+          if (typeof result !== 'undefined') {
             let extensionElements = businessObject.extensionElements;
             if (!extensionElements) {
               extensionElements = moddle.create('bpmn:ExtensionElements');
