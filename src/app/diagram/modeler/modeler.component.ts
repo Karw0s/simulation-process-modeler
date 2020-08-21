@@ -115,6 +115,10 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
 
             GroovyElement.script = result;
 
+            if (script !== result && !this.unsavedChanges) {
+              this.unsavedChanges = true;
+            }
+
             modeling.updateProperties(this.diagramElement, {
               extensionElements
             });
@@ -166,6 +170,7 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
             diagram => {
               this.importDiagramAsync(diagram.diagramXML);
               this.isNewDiagram = false;
+              this.unsavedChanges = false;
             },
             error => {
               this.snackBarRef = this.snackBar.open('Can not load diagram', 'Try again', {
@@ -174,7 +179,7 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
                 horizontalPosition: 'end'
               });
               this.snackBarRef.onAction().subscribe(() => {
-                console.log('The snack-bar action was triggered!');
+                console.log('Try to load diagram again.');
                 this.loadDiagram();
               });
               console.log(`can't load diagram ${this.diagramId}\n ${error.toString()}`);
@@ -187,36 +192,13 @@ export class ModelerComponent implements OnInit, OnDestroy, AfterContentInit, Ca
         this.bpmnJS.createDiagram();
         this.isLoading = false;
         this.isNewDiagram = true;
+        this.unsavedChanges = true;
         this.getXML().then(result => {this.diagramXml = result.xml;});
         this.diagramService.setDiagram(new Diagram(null, 'newDiagram', this.diagramXml));
       }
       console.log(`is new Diagram: ${this.isNewDiagram}`);
     });
   }
-
-  // loadUrl(url: string) {
-  //
-  //   return (
-  //     this.http.get(url, {responseType: 'text'})
-  //       .pipe(
-  //         catchError(err => throwError(err)),
-  //         importDiagram(this.bpmnJS))
-  //       .subscribe(
-  //         (warnings) => {
-  //           this.importDone.emit({
-  //             type: 'success',
-  //             warnings
-  //           });
-  //         },
-  //         (err) => {
-  //           this.importDone.emit({
-  //             type: 'error',
-  //             error: err
-  //           });
-  //         }
-  //       )
-  //   );
-  // }
 
   toolBarEvent(action: string) {
     console.log(`Modeler received ${action} from toolbar.`);
